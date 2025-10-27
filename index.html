@@ -1046,25 +1046,38 @@
 * The rationale for each candidate must be clearly separated and easy to read using <br> or <p> tags.
 * **IMPORTANT:** Your response must be ONLY the raw HTML content. Do not wrap it in Markdown blocks like \`\`\`html or \`\`\`.`;
             const uq = `${msg}\n\n---CONTEXT---\n\nCurrent Profile:\n${JSON.stringify(p, null, 2)}\n\nCandidate Database:\n${JSON.stringify(savedProfiles, null, 2)}`; 
-            try { 
-                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`; 
-                const payload = { contents: [{ parts: [{ text: uq }] }], systemInstruction: { parts: [{ text: sp }] } }; 
-                const res = await fetch(apiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }); 
-                if (!res.ok) throw new Error(`API call failed: ${res.status}`); 
-                const result = await res.json(); 
-                const cand = result.candidates?.[0]; 
-                document.getElementById('loader-message')?.remove(); 
-                if (cand?.content?.parts?.[0]?.text) { 
-                    addMessageToChat(cand.content.parts[0].text, 'ai'); 
-                } else { 
-                    throw new Error("Unexpected API response."); 
-                } 
-            } catch(err) { 
-                console.error("API Error:", err); 
-                document.getElementById('loader-message')?.remove(); 
-                addMessageToChat(`<p class="text-red-500">Sorry, an error occurred.</p>`, 'ai'); 
-            } 
-        }
+try {
+    // This is the NEW, SAFE way to call your function
+    // It calls your own code at '/.netlify/functions/get-ai-response'
+    // INSTEAD of calling googleapis.com directly.
+    const res = await fetch('/.netlify/functions/get-ai-response', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            userQuery: uq,
+            systemPrompt: sp
+        })
+    });
+
+    if (!res.ok) {
+        throw new Error(`Function call failed: ${res.status}`);
+    }
+
+    const result = await res.json();
+    const cand = result.candidates?.[0];
+
+    document.getElementById('loader-message')?.remove();
+
+    if (cand?.content?.parts?.[0]?.text) {
+        addMessageToChat(cand.content.parts[0].text, 'ai');
+    } else {
+        throw new Error("Unexpected API response structure.");
+    }
+} catch (err) {
+    console.error("API Error:", err);
+    document.getElementById('loader-message')?.remove();
+    addMessageToChat(`<p class="text-red-500">Sorry, an error occurred.</p>`, 'ai');
+}
         sendChatBtn.addEventListener('click', handleChat);
         chatInput.addEventListener('keypress', e => { if(e.key === 'Enter') handleChat() });
     </script>
