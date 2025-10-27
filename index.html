@@ -1087,6 +1087,7 @@ try {
     document.getElementById('loader-message')?.remove();
     addMessageToChat(`<p class="text-red-500">Sorry, an error occurred.</p>`, 'ai');
 }
+}
         sendChatBtn.addEventListener('click', handleChat);
         chatInput.addEventListener('keypress', e => { if(e.key === 'Enter') handleChat() });
     </script>
