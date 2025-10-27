@@ -397,10 +397,14 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pptxgenjs/3.12.0/pptxgen.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
     <script>
-        // --- GLOBAL STATE ---
-        let savedProfiles = [];
-        let skills = [], experienceCount = 0, certificationCount = 0;
-        let currentUser = { firstName: 'Alex', lastName: 'Doe', email: 'alex.doe@example.com' };
+// --- GLOBAL STATE ---
+// Try to load data from the browser's memory (localStorage).
+// If it's the user's first visit and nothing is saved, use the default values.
+let savedProfiles = JSON.parse(localStorage.getItem('savedProfiles')) || [];
+let currentUser = JSON.parse(localStorage.getItem('currentUser')) || { firstName: 'Alex', lastName: 'Doe', email: 'alex.doe@example.com' };
+
+// These don't need to be saved, they are temporary for the editor view.
+let skills = [], experienceCount = 0, certificationCount = 0;
 
         // --- THEME, CLOCK, AND UI TOGGLES ---
         document.addEventListener('DOMContentLoaded', () => {
@@ -757,39 +761,36 @@
         }
         
         const saveConfirmP = document.getElementById('save-confirm');
-        function saveProfile() {
-            const profileData = getUserProfileData();
-            if (!profileData.fullName) {
-                const finalSaveBtn = document.getElementById('save-and-finish-btn');
-                const originalText = finalSaveBtn.innerHTML;
-                finalSaveBtn.innerHTML = `<span>Full Name is required!</span>`;
-                finalSaveBtn.classList.add('bg-red-500');
-                setTimeout(() => {
-                    finalSaveBtn.innerHTML = originalText;
-                    finalSaveBtn.classList.remove('bg-red-500');
-                    feather.replace();
-                }, 3000);
-                return false;
-            }
-            const editingId = document.getElementById('editing-profile-id').value;
-            const lastUpdate = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
-
-            if (editingId) {
-                const index = savedProfiles.findIndex(p => p.id === editingId);
-                if (index > -1) {
-                    savedProfiles[index] = { ...savedProfiles[index], ...profileData, lastUpdate };
-                }
-            } else {
-                const newProfile = { ...profileData, id: `profile_${Date.now()}`, lastUpdate };
-                savedProfiles.push(newProfile);
-                document.getElementById('editing-profile-id').value = newProfile.id;
-            }
-            
-            renderDocumentsView();
-            renderRecentDocuments();
-            updateProgress();
-            return true;
+			function saveProfile() {
+        const profileData = getUserProfileData();
+        if (!profileData.fullName) {
+            // ... your validation code is perfect ...
+            return false;
         }
+        const editingId = document.getElementById('editing-profile-id').value;
+        const lastUpdate = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+
+        if (editingId) {
+            const index = savedProfiles.findIndex(p => p.id === editingId);
+            if (index > -1) {
+                savedProfiles[index] = { ...savedProfiles[index], ...profileData, lastUpdate };
+            }
+        } else {
+            const newProfile = { ...profileData, id: `profile_${Date.now()}`, lastUpdate };
+            savedProfiles.push(newProfile);
+            document.getElementById('editing-profile-id').value = newProfile.id;
+        }
+
+        // ==========================================================
+        // === ADD THIS LINE HERE ===================================
+        // ==========================================================
+        localStorage.setItem('savedProfiles', JSON.stringify(savedProfiles));
+
+        renderDocumentsView();
+        renderRecentDocuments();
+        updateProgress();
+        return true;
+    }
 
         window.loadProfileForEditing = function(profileId, fromView = 'documents') {
             const profile = savedProfiles.find(p => p.id === profileId);
@@ -855,15 +856,23 @@
             }
         });
         
-        document.getElementById('save-settings-btn').addEventListener('click', () => {
-            currentUser.firstName = document.getElementById('settings-firstName').value;
-            currentUser.lastName = document.getElementById('settings-lastName').value;
-            currentUser.email = document.getElementById('settings-email').value;
-            updateUserInfoUI();
-            const confirmEl = document.getElementById('settings-save-confirm');
-            confirmEl.textContent = 'Settings saved successfully!';
-            setTimeout(() => confirmEl.textContent = '', 3000);
-        });
+document.getElementById('save-settings-btn').addEventListener('click', () => {
+    // The user's information is updated from the form fields here
+    currentUser.firstName = document.getElementById('settings-firstName').value;
+    currentUser.lastName = document.getElementById('settings-lastName').value;
+    currentUser.email = document.getElementById('settings-email').value;
+
+    // ==========================================================
+    // === ADD THIS LINE HERE to save the updated user object ===
+    // ==========================================================
+    localStorage.setItem('currentUser', JSON.stringify(currentUser));
+
+    // The rest of the function updates the UI
+    updateUserInfoUI();
+    const confirmEl = document.getElementById('settings-save-confirm');
+    confirmEl.textContent = 'Settings saved successfully!';
+    setTimeout(() => confirmEl.textContent = '', 3000);
+});
         
         function formatDate(d) { if (!d) return 'Present'; return new Date(d + 'T00:00:00').toLocaleDateString('en-US', { year: 'numeric', month: 'short' }); }
         
