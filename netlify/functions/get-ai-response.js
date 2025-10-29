@@ -32,8 +32,7 @@ exports.handler = async function(event, context) {
         };
 
         // 6. Make the secure call to the Google API from the server.
-        // We must import 'fetch' this way in a CJS function.
-        const fetch = (await import('node-fetch')).default;
+        // The 'fetch' function is already available globally in this environment.
         
         const response = await fetch(apiUrl, {
             method: 'POST',
@@ -65,3 +64,4 @@ exports.handler = async function(event, context) {
         };
     }
 };
+
