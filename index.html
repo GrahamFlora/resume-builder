@@ -1,61 +1,86 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI-Powered Professional Profile & Resume Builder</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* --- Base Colors & Variables (Accenture-Inspired Purple/Black Theme) --- */
+        /* --- Base Colors & Variables --- */
         :root {
-            --background-light: #f9fafb;
-            --text-light: #1f2937;
-            --card-bg-light: #ffffff;
-            --border-light: #e5e7eb;
-            --input-bg-light: #f9fafb;
-            --sidebar-bg-light: #ffffff;
-            
+            /* --- Light Theme (NEW) --- */
+            --background: #f9fafb;
+            --text: #1f2937;
+            --text-subtle: #6b7280;
+            --card-bg: #ffffff;
+            --border: #e5e7eb;
+            --input-bg: #f9fafb;
+            --sidebar-bg: #ffffff;
+            --icon-color: #6b7280;
+            --icon-hover: #1f2937;
+
             /* --- Primary Theme Colors --- */
-            --primary-purple: #8b5cf6; /* Replaces --primary-blue */
-            --primary-purple-hover: #7c3aed; /* Replaces --primary-blue-hover */
-            --accent-sidebar-dark: #5b21b6; /* Active sidebar link */
+            --primary-purple: #8b5cf6;
+            --primary-purple-hover: #7c3aed;
+            --accent-sidebar-active: #f5f3ff; /* Light purple bg for active sidebar link */
+            --accent-sidebar-text: #5b21b6;   /* Dark purple text for active sidebar link */
             --danger-red: #ef4444;
             --danger-red-hover: #dc2626;
-
-            /* --- Dark Theme (Now the only theme) --- */
-            --background-dark: #111827; /* Darker Black */
-            --text-dark: #f3f4f6;
-            --card-bg-dark: #1f2937; /* Darker Gray */
-            --border-dark: #374151;
-            --input-bg-dark: #374151;
-            --sidebar-bg-dark: #1f2937; /* Darker Gray */
+            --danger-text: #ef4444;
+            --danger-hover: #fee2e2;
         }
 
-        /* Set dark theme as the permanent base */
-        .light, .dark { background-color: var(--background-dark); color: var(--text-dark); }
-        .card { background-color: var(--card-bg-dark); border: 1px solid var(--border-dark); }
+        .dark {
+            /* --- Dark Theme (UPDATED) --- */
+            --background: #111827;
+            --text: #f3f4f6;
+            --text-subtle: #9ca3af;
+            --card-bg: #1f2937;
+            --border: #374151;
+            --input-bg: #374151;
+            --sidebar-bg: #1f2937;
+            --icon-color: #9ca3af;
+            --icon-hover: #f3f4f6;
+
+            /* --- Primary Theme Colors --- */
+            --primary-purple: #8b5cf6;
+            --primary-purple-hover: #7c3aed;
+            --accent-sidebar-active: #5b21b6; /* Active sidebar link */
+            --accent-sidebar-text: #ede9fe;
+            --danger-red: #ef4444;
+            --danger-red-hover: #dc2626;
+            --danger-text: #f87171;
+            --danger-hover: #450a0a;
+        }
+
+        /* --- Base Styles (UPDATED) --- */
+        body {
+            background-color: var(--background);
+            color: var(--text);
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        .card { background-color: var(--card-bg); border: 1px solid var(--border); }
+        .text-subtle { color: var(--text-subtle); }
         
         .input-field { 
-            background-color: var(--input-bg-dark); 
-            border: 1px solid var(--border-dark); 
-            color: var(--text-dark);
+            background-color: var(--input-bg); 
+            border: 1px solid var(--border); 
+            color: var(--text);
             transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out; 
         }
         .input-field:focus { outline: none; border-color: var(--primary-purple); box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.3); }
-        .input-field::placeholder { color: #9ca3af; }
-        
+        .input-field::placeholder { color: var(--text-subtle); }
+
         /* Date input placeholder styling */
         input[type="date"] {
-            color: #9ca3af; /* Grey color for the 'mm/dd/yyyy' placeholder */
+            color: var(--text-subtle);
         }
-        /* When a date is actually selected, change color back to the main text color */
         input[type="date"]:valid,
         input[type="date"]:focus {
-            color: var(--text-dark);
+            color: var(--text);
         }
-        /* Style the calendar icon to be visible on dark backgrounds */
         input[type="date"]::-webkit-calendar-picker-indicator {
-            filter: invert(0.6);
+            filter: var(--background) == #111827 ? invert(0.6) : none;
             cursor: pointer;
         }
 
@@ -73,34 +98,35 @@
         .btn-secondary { background-color: #4b5563; color: white; transition: background-color 0.3s ease; font-weight: 600; }
         .btn-secondary:hover { background-color: #374151; }
         
-        .btn-utility { background-color: #4b5563; color: #f3f4f6; transition: background-color 0.3s ease; font-weight: 600; }
-        .btn-utility:hover { background-color: #6b7280; }
+        .btn-utility { background-color: var(--input-bg); color: var(--text); border: 1px solid var(--border); transition: background-color 0.3s ease; font-weight: 600; }
+        .btn-utility:hover { background-color: var(--border); }
         
         .fade-in { animation: fadeIn 0.5s ease-in-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        .loader { border: 2px solid #374151; border-top: 2px solid var(--primary-purple); border-radius: 50%; width: 20px; height: 20px; animation: spin 1s linear infinite; }
+        .loader { border: 2px solid var(--border); border-top: 2px solid var(--primary-purple); border-radius: 50%; width: 20px; height: 20px; animation: spin 1s linear infinite; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-       
-        .ai-bubble { background-color: #4b5563; color: var(--text-dark); border-bottom-left-radius: 2px; }
+        
+        .ai-bubble { background-color: var(--input-bg); border: 1px solid var(--border); color: var(--text); border-bottom-left-radius: 2px; }
         .user-bubble { background-color: var(--primary-purple); color: white; border-bottom-right-radius: 2px; }
 
-        #sidebar { background-color: var(--sidebar-bg-dark); transition: transform 0.3s ease-in-out; transform: translateX(-100%); z-index: 40; }
+        #sidebar { background-color: var(--sidebar-bg); transition: transform 0.3s ease-in-out; transform: translateX(-100%); z-index: 40; border-right: 1px solid var(--border); }
         #main-content { transition: margin-left 0.3s ease-in-out; margin-left: 0; }
         body.sidebar-open #sidebar { transform: translateX(0); }
         body.sidebar-open #main-content { margin-left: 256px; }
 
-        .nav-link { color: #d1d5db; }
+        .nav-link { color: var(--text-subtle); }
+        .nav-link:hover { background-color: var(--input-bg); }
         .nav-link.active-link {
-            background-color: var(--accent-sidebar-dark) !important;
-            color: #ede9fe !important;
+            background-color: var(--accent-sidebar-active) !important;
+            color: var(--accent-sidebar-text) !important;
             font-weight: 700;
         }
 
-        #sidebar-open-btn svg { color: #f3f4f6; }
+        #sidebar-open-btn svg { color: var(--text); }
         
-        .document-card { border: 1px solid var(--border-dark); transition: all 0.2s ease-in-out; }
-        .document-card-link:hover .document-card { box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); transform: translateY(-2px); }
-        .document-actions button { color: #d1d5db; }
+        .document-card { border: 1px solid var(--border); transition: all 0.2s ease-in-out; }
+        .document-card-link:hover .document-card { box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); transform: translateY(-2px); border-color: var(--primary-purple); }
+        .document-actions button { color: var(--text-subtle); }
 
         #confirmation-modal-backdrop { background-color: rgba(0, 0, 0, 0.5); backdrop-filter: blur(2px); z-index: 50; }
     
@@ -112,35 +138,70 @@
             background: transparent; /* Track is invisible */
         }
         #document-cards-grid::-webkit-scrollbar-thumb {
-            background: var(--border-dark);
+            background: var(--border);
             border-radius: 4px;
         }
         #document-cards-grid::-webkit-scrollbar-thumb:hover {
             background: #4b5563; /* btn-utility bg */
         }
+
+        /* Chat Modal Sizing */
+        #ai-chat-modal {
+            transition: all 0.3s ease-in-out;
+        }
+        #ai-chat-modal.is-maximized {
+            width: 90vw;
+            height: 90vh;
+            max-width: 1200px;
+            max-height: 90%;
+            bottom: 2rem;
+            right: 2rem;
+        }
+
+        /* New Quick Action Button Styles */
+        .quick-action-btn {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border);
+            transition: all 0.2s ease-in-out;
+        }
+        .quick-action-btn:hover {
+            transform: translateY(-2px);
+            border-color: var(--primary-purple);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        .quick-action-icon {
+            transition: all 0.2s ease-in-out;
+            background-color: var(--input-bg);
+            color: var(--primary-purple);
+        }
+        .quick-action-btn:hover .quick-action-icon {
+            transform: scale(1.1);
+            background-color: var(--primary-purple);
+            color: white;
+        }
     </style>
 </head>
-<body class="transition-colors duration-500">
+<body>
     <div class="relative min-h-screen flex">
         <!-- Sidebar -->
-        <aside id="sidebar" class="w-64 fixed inset-y-0 left-0 border-r dark:border-gray-700 shadow-lg">
-            <div class="p-4 flex justify-between items-center border-b dark:border-gray-700">
-                 <h2 class="text-xl font-bold text-violet-400">SLH Profiler</h2>
-                 <button id="sidebar-close-btn" class="p-1 rounded-full hover:bg-gray-600">
-                     <svg width="24" height="24" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M14.5684 16.743L13.2169 18.2173L7.32379 12.7371C6.89142 12.3408 6.89142 11.6591 7.32379 11.2628L13.2169 5.81372L14.5684 7.28803L9.4794 11.9999L14.5684 16.743Z" fill="currentColor"></path></svg>
-                 </button>
+        <aside id="sidebar" class="w-64 fixed inset-y-0 left-0 shadow-lg">
+            <div class="p-4 flex justify-between items-center border-b" style="border-color: var(--border);">
+                <h2 class="text-xl font-bold text-violet-500">SLH Profiler</h2>
+                <button id="sidebar-close-btn" class="p-1 rounded-full hover:bg-gray-200 dark:hover:bg-gray-600">
+                    <svg width="24" height="24" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M14.5684 16.743L13.2169 18.2173L7.32379 12.7371C6.89142 12.3408 6.89142 11.6591 7.32379 11.2628L13.2169 5.81372L14.5684 7.28803L9.4794 11.9999L14.5684 16.743Z" fill="currentColor"></path></svg>
+                </button>
             </div>
             <nav class="mt-4 p-2">
-                <a href="#" data-view="dashboard" class="nav-link flex items-center p-2 rounded-md hover:bg-gray-700 font-medium active-link">
+                <a href="#" data-view="dashboard" class="nav-link flex items-center p-2 rounded-md font-medium active-link">
                     <i data-feather="home" class="mr-3"></i> Dashboard
                 </a>
                 <div class="mt-2">
-                    <button id="documents-toggle" class="w-full flex justify-between items-center p-2 rounded-md hover:bg-gray-700 nav-link font-medium">
+                    <button id="documents-toggle" class="w-full flex justify-between items-center p-2 rounded-md nav-link font-medium">
                         <span class="flex items-center"><i data-feather="file-text" class="mr-3"></i> Documents</span>
                         <i data-feather="chevron-down" class="chevron-icon transition-transform duration-300"></i>
                     </button>
                     <div id="documents-submenu" class="pl-4 mt-1 space-y-1">
-                        <a href="#" data-view="documents" class="nav-link block p-2 text-sm rounded-md hover:bg-gray-700">My Resumes</a>
+                        <a href="#" data-view="documents" class="nav-link block p-2 text-sm rounded-md">My Resumes</a>
                     </div>
                 </div>
             </nav>
@@ -148,24 +209,24 @@
 
         <!-- Main Content Area -->
         <div id="main-content" class="flex-1">
-            <header class="flex justify-between items-center p-4 border-b dark:border-gray-700 dark:bg-gray-800 sticky top-0 z-30">
+            <header class="flex justify-between items-center p-4 border-b sticky top-0 z-30" style="border-color: var(--border); background-color: var(--background);">
                 <div class="flex items-center gap-4">
-                    <button id="sidebar-open-btn" class="p-2 rounded-full hover:bg-gray-600"><i data-feather="menu"></i></button>
-                    <h1 class="text-xl font-bold text-violet-400 hidden sm:block">SLH Profiler</h1>
+                    <button id="sidebar-open-btn" class="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-600"><i data-feather="menu"></i></button>
+                    <h1 class="text-xl font-bold text-violet-500 hidden sm:block">SLH Profiler</h1>
                 </div>
                 <div class="relative">
-                    <button id="user-menu-btn" class="w-10 h-10 bg-gray-600 rounded-full flex items-center justify-center"><i data-feather="user"></i></button>
+                    <button id="user-menu-btn" class="w-10 h-10 bg-gray-200 dark:bg-gray-600 rounded-full flex items-center justify-center"><i data-feather="user"></i></button>
                     <div id="user-menu" class="absolute right-0 mt-2 w-64 card p-2 rounded-lg shadow-xl hidden z-30">
-                        <div class="p-2 border-b dark:border-gray-600">
+                        <div class="p-2 border-b" style="border-color: var(--border);">
                             <p id="user-menu-name" class="font-semibold"></p>
-                            <p id="user-menu-email" class="text-sm text-gray-400"></p>
+                            <p id="user-menu-email" class="text-sm text-subtle"></p>
                         </div>
                         <div class="mt-2 space-y-1">
-                            <a href="#" data-view="settings" class="flex items-center p-2 rounded-md hover:bg-gray-700">
+                            <a href="#" data-view="settings" class="flex items-center p-2 rounded-md nav-link">
                                 <i data-feather="settings" class="mr-3 w-5 h-5"></i>Account Settings
                             </a>
-                            <a href="#" data-view="faq" class="flex items-center p-2 rounded-md hover:bg-gray-700"><i data-feather="help-circle" class="mr-3 w-5 h-5"></i>FAQ</a>
-                            <a href="#" class="flex items-center p-2 rounded-md hover:bg-gray-700"><i data-feather="log-out" class="mr-3 w-5 h-5"></i>Log Out</a>
+                            <a href="#" data-view="faq" class="flex items-center p-2 rounded-md nav-link"><i data-feather="help-circle" class="mr-3 w-5 h-5"></i>FAQ</a>
+                            <a href="#" class="flex items-center p-2 rounded-md nav-link"><i data-feather="log-out" class="mr-3 w-5 h-5"></i>Log Out</a>
                         </div>
                     </div>
                 </div>
@@ -176,25 +237,53 @@
                 <div id="dashboard-view" class="space-y-8 p-4 md:p-8">
                     <div class="text-center">
                         <h1 class="text-3xl font-bold" id="dashboard-greeting"></h1>
-                        <p class="text-gray-400">What's your goal today?</p>
+                        <p class="text-subtle">What's your goal today?</p>
                     </div>
-                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 text-left">
-                        <div class="card p-6 rounded-lg shadow-md">
-                            <h2 class="text-xl font-semibold mb-6">Your Progress</h2>
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 text-left">
+                        
+                        <!-- Profile Strength -->
+                        <div class="card p-6 rounded-lg shadow-md lg:col-span-1">
+                            <h2 class="text-xl font-semibold mb-6">Profile Strength</h2>
+                            <div class="relative w-48 h-48 mx-auto">
+                                <svg class="w-full h-full" viewBox="0 0 100 100">
+                                    <!-- Background circle -->
+                                    <circle class="text-gray-200 dark:text-gray-700" stroke-width="10" stroke="currentColor" fill="transparent" r="40" cx="50" cy="50"></circle>
+                                    <!-- Progress circle -->
+                                    <circle id="progress-ring-circle" class="text-violet-500" stroke-width="10" stroke-linecap="round" stroke="currentColor" fill="transparent" r="40" cx="50" cy="50" style="stroke-dasharray: 251.2; stroke-dashoffset: 251.2; transition: stroke-dashoffset 0.5s ease-out; transform: rotate(-90deg); transform-origin: 50% 50%;"></circle>
+                                    <!-- Text in the middle -->
+                                    <text id="progress-ring-text" class="text-2xl font-bold" fill="currentColor" x="50" y="50" dy="0.35em" text-anchor="middle">0%</text>
+                                </svg>
+                            </div>
+                            <p id="dashboard-strength-subtext" class="text-center text-subtle mt-4">Create your first resume to track progress!</p>
+                        </div>
+                        
+                        <!-- Quick Actions (NEW DESIGN) -->
+                        <div class="card p-6 rounded-lg shadow-md lg:col-span-1">
+                            <h2 class="text-xl font-semibold mb-6">Quick Actions</h2>
                             <div class="space-y-4">
-                                <div class="flex items-center">
-                                    <div class="w-10 h-10 rounded-lg bg-violet-900 flex items-center justify-center mr-4"><i data-feather="file-text" class="text-violet-400"></i></div>
-                                    <div class="flex-1">
-                                        <p>Resume building</p>
-                                        <div class="w-full bg-gray-700 rounded-full h-2.5 mt-1">
-                                            <div id="resume-progress-bar" class="bg-violet-600 h-2.5 rounded-full" style="width: 0%"></div>
-                                        </div>
+                                <button onclick="showView('editor'); clearForm();" class="quick-action-btn w-full flex items-center p-4 rounded-lg">
+                                    <div class="quick-action-icon w-12 h-12 rounded-full flex items-center justify-center shrink-0">
+                                        <i data-feather="plus" class="w-6 h-6"></i>
                                     </div>
-                                    <span id="resume-progress-text" class="ml-4 font-semibold">0%</span>
-                                </div>
+                                    <div class="ml-4 text-left">
+                                        <p class="font-semibold">Create New Resume</p>
+                                        <p class="text-sm text-subtle">Start a fresh profile from scratch.</p>
+                                    </div>
+                                </button>
+                                <button onclick="openChatForRecruiter();" class="quick-action-btn w-full flex items-center p-4 rounded-lg">
+                                    <div class="quick-action-icon w-12 h-12 rounded-full flex items-center justify-center shrink-0">
+                                        <i data-feather="search" class="w-6 h-6"></i>
+                                    </div>
+                                    <div class="ml-4 text-left">
+                                        <p class="font-semibold">Find Candidates</p>
+                                        <p class="text-sm text-subtle">Use the AI Coach to find talent.</p>
+                                    </div>
+                                </button>
                             </div>
                         </div>
-                        <div class="card p-6 rounded-lg shadow-md">
+
+                        <!-- Recent Documents -->
+                        <div class="card p-6 rounded-lg shadow-md lg:col-span-1">
                             <h2 class="text-xl font-semibold mb-6">Recent Documents</h2>
                             <div id="recent-documents-list" class="space-y-3">
                                 <!-- Recent documents will be rendered here -->
@@ -205,7 +294,7 @@
 
                 <!-- Documents/My Resumes View -->
                 <div id="documents-view" class="hidden py-4 md:py-8 space-y-6">
-                    <div class="flex justify-between items-center border-b pb-4 dark:border-gray-700 px-4 md:px-8">
+                    <div class="flex justify-between items-center border-b pb-4 px-4 md:px-8" style="border-color: var(--border);">
                         <h1 class="text-3xl font-bold">Documents</h1>
                         <button onclick="showView('editor'); clearForm();" class="p-3 rounded-md btn-primary flex items-center space-x-2">
                             <i data-feather="plus" class="w-5 h-5"></i>
@@ -219,8 +308,8 @@
                 
                 <!-- Editor View -->
                 <div id="editor-view" class="hidden max-w-4xl mx-auto space-y-8 p-4 md:p-8">
-                    <div class="flex items-center gap-4 border-b pb-4 dark:border-gray-700">
-                        <button onclick="showView('documents')" class="p-2 rounded-full hover:bg-gray-600">
+                    <div class="flex items-center gap-4 border-b pb-4" style="border-color: var(--border);">
+                        <button onclick="showView('documents')" class="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-600">
                             <i data-feather="arrow-left"></i>
                         </button>
                         <h1 class="text-3xl font-bold">Create/Edit Resume</h1>
@@ -229,10 +318,11 @@
                     <div class="card p-6 rounded-lg shadow-md fade-in">
                         <h2 class="text-2xl font-semibold mb-6 flex items-center"><i data-feather="user" class="mr-3"></i>Personal Information</h2>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div><label for="fullName" class="block text-sm font-medium text-gray-400 mb-1">Full Name</label><input id="fullName" type="text" placeholder="e.g., Alex Doe" class="w-full p-3 rounded-md input-field progress-input"></div>
-                            <div><label for="jobTitle" class="block text-sm font-medium text-gray-400 mb-1">Current Job Title</label><input id="jobTitle" type="text" placeholder="e.g., Senior Software Engineer" class="w-full p-3 rounded-md input-field progress-input"></div>
-                            <div><label for="email" class="block text-sm font-medium text-gray-400 mb-1">Email Address</label><div class="relative"><input id="email" type="email" placeholder="you@example.com" class="w-full p-3 rounded-md input-field progress-input"><span id="email-validation-icon" class="absolute right-3 top-1/2 -translate-y-1/2"></span></div></div>
-                            <div><label for="phone" class="block text-sm font-medium text-gray-400 mb-1">Phone Number</label><div class="flex gap-2">
+                            <div><label for="firstName" class="block text-sm font-medium text-subtle mb-1">First Name</label><input id="firstName" type="text" placeholder="e.g., Alex" class="w-full p-3 rounded-md input-field progress-input"></div>
+                            <div><label for="lastName" class="block text-sm font-medium text-subtle mb-1">Last Name</label><input id="lastName" type="text" placeholder="e.g., Doe" class="w-full p-3 rounded-md input-field progress-input"></div>
+                            <div><label for="jobTitle" class="block text-sm font-medium text-subtle mb-1">Current Job Title</label><input id="jobTitle" type="text" placeholder="e.g., Senior Software Engineer" class="w-full p-3 rounded-md input-field progress-input"></div>
+                            <div><label for="email" class="block text-sm font-medium text-subtle mb-1">Email Address</label><div class="relative"><input id="email" type="email" placeholder="you@example.com" class="w-full p-3 rounded-md input-field progress-input"><span id="email-validation-icon" class="absolute right-3 top-1/2 -translate-y-1/2"></span></div></div>
+                            <div class="md:col-span-2"><label for="phone" class="block text-sm font-medium text-subtle mb-1">Phone Number</label><div class="flex gap-2">
                                 <div class="relative w-36">
                                     <button type="button" id="country-code-btn" class="input-field w-full p-3 rounded-md flex items-center justify-between text-left">
                                         <span class="flex items-center gap-2">
@@ -241,38 +331,38 @@
                                         </span>
                                         <i data-feather="chevron-down" class="w-4 h-4 text-gray-500"></i>
                                     </button>
-                                    <div id="country-code-dropdown" class="absolute top-full mt-1 w-full card rounded-md shadow-lg hidden z-20 p-1">
-                                        <button class="country-option w-full text-left p-2 hover:bg-gray-700 flex items-center gap-2 rounded-md" data-value="+63" data-country="ph" data-placeholder="e.g., 9171234567"><img src="https://flagcdn.com/w20/ph.png" alt="PH flag" class="w-5 h-auto"><span>PH +63</span></button>
-                                        <button class="country-option w-full text-left p-2 hover:bg-gray-700 flex items-center gap-2 rounded-md" data-value="+1" data-country="us" data-placeholder="e.g., 5551234567"><img src="https://flagcdn.com/w20/us.png" alt="US flag" class="w-5 h-auto"><span>US +1</span></button>
-                                        <button class="country-option w-full text-left p-2 hover:bg-gray-700 flex items-center gap-2 rounded-md" data-value="+44" data-country="gb" data-placeholder="e.g., 7700900123"><img src="https://flagcdn.com/w20/gb.png" alt="UK flag" class="w-5 h-auto"><span>UK +44</span></button>
-                                        <button class="country-option w-full text-left p-2 hover:bg-gray-700 flex items-center gap-2 rounded-md" data-value="+61" data-country="au" data-placeholder="e.g., 412345678"><img src="https://flagcdn.com/w20/au.png" alt="AU flag" class="w-5 h-auto"><span>AU +61</span></button>
-                                        <button class="country-option w-full text-left p-2 hover:bg-gray-700 flex items-center gap-2 rounded-md" data-value="+91" data-country="in" data-placeholder="e.g., 9876543210"><img src="https://flagcdn.com/w20/in.png" alt="IN flag" class="w-5 h-auto"><span>IN +91</span></button>
-                                        <button class="country-option w-full text-left p-2 hover:bg-gray-700 flex items-center gap-2 rounded-md" data-value="+81" data-country="jp" data-placeholder="e.g., 9012345678"><img src="https://flagcdn.com/w20/jp.png" alt="JP flag" class="w-5 h-auto"><span>JP +81</span></button>
+                                    <div id="country-code-dropdown" class="absolute top-full mt-1 w-full card rounded-md shadow-lg hidden z-20 p-1 max-h-60 overflow-y-auto">
+                                        <button class="country-option w-full text-left p-2 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center gap-2 rounded-md" data-value="+63" data-country="ph" data-placeholder="e.g., 9171234567"><img src="https://flagcdn.com/w20/ph.png" alt="PH flag" class="w-5 h-auto"><span>PH +63</span></button>
+                                        <button class="country-option w-full text-left p-2 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center gap-2 rounded-md" data-value="+1" data-country="us" data-placeholder="e.g., 5551234567"><img src="https://flagcdn.com/w20/us.png" alt="US flag" class="w-5 h-auto"><span>US +1</span></button>
+                                        <button class="country-option w-full text-left p-2 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center gap-2 rounded-md" data-value="+44" data-country="gb" data-placeholder="e.g., 7700900123"><img src="https://flagcdn.com/w20/gb.png" alt="UK flag" class="w-5 h-auto"><span>UK +44</span></button>
+                                        <button class="country-option w-full text-left p-2 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center gap-2 rounded-md" data-value="+61" data-country="au" data-placeholder="e.g., 412345678"><img src="https://flagcdn.com/w20/au.png" alt="AU flag" class="w-5 h-auto"><span>AU +61</span></button>
+                                        <button class="country-option w-full text-left p-2 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center gap-2 rounded-md" data-value="+91" data-country="in" data-placeholder="e.g., 9876543210"><img src="https://flagcdn.com/w20/in.png" alt="IN flag" class="w-5 h-auto"><span>IN +91</span></button>
+                                        <button class="country-option w-full text-left p-2 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center gap-2 rounded-md" data-value="+81" data-country="jp" data-placeholder="e.g., 9012345678"><img src="https://flagcdn.com/w20/jp.png" alt="JP flag" class="w-5 h-auto"><span>JP +81</span></button>
                                     </div>
                                 </div>
                                 <input id="phone" type="tel" placeholder="e.g., 9171234567" class="flex-grow p-3 rounded-md input-field progress-input">
                             </div></div>
-                            <div class="md:col-span-2"><label for="linkedin" class="block text-sm font-medium text-gray-400 mb-1">LinkedIn Profile URL</label><input id="linkedin" type="text" placeholder="https://linkedin.com/in/yourprofile" class="w-full p-3 rounded-md input-field progress-input"></div>
-                            <div class="md:col-span-2"><label for="summary" class="block text-sm font-medium text-gray-400 mb-1">Professional Summary</label><textarea id="summary" placeholder="A brief summary of your career, skills, and goals..." class="w-full p-3 rounded-md input-field progress-input" rows="4"></textarea></div>
+                            <div class="md:col-span-2"><label for="linkedin" class="block text-sm font-medium text-subtle mb-1">LinkedIn Profile URL</label><input id="linkedin" type="text" placeholder="https://linkedin.com/in/yourprofile" class="w-full p-3 rounded-md input-field progress-input"></div>
+                            <div class="md:col-span-2"><label for="summary" class="block text-sm font-medium text-subtle mb-1">Professional Summary</label><textarea id="summary" placeholder="A brief summary of your career, skills, and goals..." class="w-full p-3 rounded-md input-field progress-input" rows="4"></textarea></div>
                         </div>
                         <p id="save-confirm" class="text-center text-green-600 font-semibold mt-4 h-6"></p>
                     </div>
                     <div class="card p-6 rounded-lg shadow-md"><h2 class="text-2xl font-semibold mb-4 flex items-center"><i data-feather="briefcase" class="mr-3"></i>Work Experience</h2><div id="experience-list" class="space-y-6"></div><button id="add-experience" class="mt-4 w-full md:w-auto flex items-center justify-center p-3 rounded-md btn-secondary"><i data-feather="plus" class="mr-2"></i>Add Experience</button></div>
                     <div class="card p-6 rounded-lg shadow-md"><h2 class="text-2xl font-semibold mb-4 flex items-center"><i data-feather="award" class="mr-3"></i>Certifications</h2><div id="certification-list" class="space-y-6"></div><button id="add-certification" class="mt-4 w-full md:w-auto flex items-center justify-center p-3 rounded-md btn-secondary"><i data-feather="plus" class="mr-2"></i>Add Certification</button></div>
-                    <div class="card p-6 rounded-lg shadow-md"><h2 class="text-2xl font-semibold mb-4 flex items-center"><i data-feather="star" class="mr-3"></i>Core Skills</h2><p class="text-sm text-gray-400 mb-4">Add your most important skills.</p><div id="skills-list" class="flex flex-wrap gap-2 mb-4"></div><div class="flex"><input id="skill-input" type="text" placeholder="Add a skill and press Enter" class="flex-grow p-3 rounded-l-md input-field"><button id="add-skill-btn" class="p-3 rounded-r-md btn-secondary"><i data-feather="plus"></i></button></div></div>
+                    <div class="card p-6 rounded-lg shadow-md"><h2 class="text-2xl font-semibold mb-4 flex items-center"><i data-feather="star" class="mr-3"></i>Core Skills</h2><p class="text-sm text-subtle mb-4">Add your most important skills.</p><div id="skills-list" class="flex flex-wrap gap-2 mb-4"></div><div class="flex"><input id="skill-input" type="text" placeholder="Add a skill and press Enter" class="flex-grow p-3 rounded-l-md input-field"><button id="add-skill-btn" class="p-3 rounded-r-md btn-secondary"><i data-feather="plus"></i></button></div></div>
                     
                     <div class="flex justify-end">
-                        <button id="save-and-finish-btn" class="p-4 rounded-md btn-primary flex items-center space-x-2 text-lg">
-                            <i data-feather="check-circle" class="w-6 h-6"></i>
-                            <span>Save & Finish</span>
+                        <button id="save-btn" class="p-4 rounded-md btn-primary flex items-center space-x-2 text-lg">
+                            <i data-feather="save" class="w-6 h-6"></i>
+                            <span>Save</span>
                         </button>
                     </div>
                 </div>
 
                 <!-- Account Settings View -->
                 <div id="settings-view" class="hidden max-w-4xl mx-auto space-y-8 p-4 md:p-8">
-                    <div class="flex items-center gap-4 border-b pb-4 dark:border-gray-700">
-                        <button onclick="showView('dashboard')" class="p-2 rounded-full hover:bg-gray-600">
+                    <div class="flex items-center gap-4 border-b pb-4" style="border-color: var(--border);">
+                        <button onclick="showView('dashboard')" class="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-600">
                             <i data-feather="arrow-left"></i>
                         </button>
                         <h1 class="text-3xl font-bold">Account Settings</h1>
@@ -281,15 +371,15 @@
                         <h2 class="text-2xl font-semibold mb-6 flex items-center"><i data-feather="user" class="mr-3"></i>User Profile</h2>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
-                                <label for="settings-firstName" class="block text-sm font-medium text-gray-400 mb-1">First Name</label>
+                                <label for="settings-firstName" class="block text-sm font-medium text-subtle mb-1">First Name</label>
                                 <input id="settings-firstName" type="text" class="w-full p-3 rounded-md input-field">
                             </div>
                             <div>
-                                <label for="settings-lastName" class="block text-sm font-medium text-gray-400 mb-1">Last Name</label>
+                                <label for="settings-lastName" class="block text-sm font-medium text-subtle mb-1">Last Name</label>
                                 <input id="settings-lastName" type="text" class="w-full p-3 rounded-md input-field">
                             </div>
                             <div class="md:col-span-2">
-                                <label for="settings-email" class="block text-sm font-medium text-gray-400 mb-1">Email Address</label>
+                                <label for="settings-email" class="block text-sm font-medium text-subtle mb-1">Email Address</label>
                                 <input id="settings-email" type="email" class="w-full p-3 rounded-md input-field">
                             </div>
                         </div>
@@ -300,12 +390,31 @@
                         </div>
                         <p id="settings-save-confirm" class="text-center text-green-600 font-semibold mt-4 h-6"></p>
                     </div>
+
+                    <div class="card p-6 rounded-lg shadow-md fade-in">
+                        <h2 class="text-2xl font-semibold mb-6 flex items-center"><i data-feather="image" class="mr-3"></i>Appearance</h2>
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <label for="theme-select" class="block font-medium text-subtle mb-1">Theme</label>
+                                <p class="text-sm text-subtle">Choose your preferred interface theme.</p>
+                            </div>
+                            <div class="relative w-48">
+                                <select id="theme-select" class="w-full p-3 rounded-md input-field appearance-none">
+                                    <option value="system">System Default</option>
+                                    <option value="light">Light</option>
+                                    <option value="dark">Dark</option>
+                                </select>
+                                <i data-feather="chevron-down" class="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-subtle pointer-events-none"></i>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
                 
                 <!-- FAQ View -->
                 <div id="faq-view" class="hidden max-w-4xl mx-auto space-y-8 p-4 md:p-8">
-                    <div class="flex items-center gap-4 border-b pb-4 dark:border-gray-700">
-                        <button onclick="showView('dashboard')" class="p-2 rounded-full hover:bg-gray-600">
+                    <div class="flex items-center gap-4 border-b pb-4" style="border-color: var(--border);">
+                        <button onclick="showView('dashboard')" class="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-600">
                             <i data-feather="arrow-left"></i>
                         </button>
                         <h1 class="text-3xl font-bold">Frequently Asked Questions</h1>
@@ -317,7 +426,7 @@
                                 <i data-feather="chevron-down" class="chevron-icon transition-transform duration-300"></i>
                             </button>
                             <div class="faq-content hidden p-4 pt-0">
-                                <p class="text-gray-400">The AI Coach uses advanced language models to provide personalized feedback on your resume, suggest job titles based on your experience, and even help you find suitable candidates if you're in a hiring role. Just open the chat and ask a question related to your career goals!</p>
+                                <p class="text-subtle">The AI Coach uses advanced language models to provide personalized feedback on your resume, suggest job titles based on your experience, and even help you find suitable candidates if you're in a hiring role. Just open the chat and ask a question related to your career goals!</p>
                             </div>
                         </div>
                         <div class="card rounded-lg">
@@ -326,7 +435,7 @@
                                 <i data-feather="chevron-down" class="chevron-icon transition-transform duration-300"></i>
                             </button>
                             <div class="faq-content hidden p-4 pt-0">
-                                <p class="text-gray-400">Yes! From the "Documents" dashboard, you can download any of your saved resumes as a PDF or export the content to a PowerPoint (PPT) presentation. This gives you flexibility for different application types.</p>
+                                <p class="text-subtle">Yes! From the "Documents" dashboard, you can download any of your saved resumes as a PDF or export the content to a PowerPoint (PPT) presentation. This gives you flexibility for different application types.</p>
                             </div>
                         </div>
                          <div class="card rounded-lg">
@@ -335,7 +444,7 @@
                                 <i data-feather="chevron-down" class="chevron-icon transition-transform duration-300"></i>
                             </button>
                             <div class="faq-content hidden p-4 pt-0">
-                                <p class="text-gray-400">Absolutely. We prioritize your privacy and data security. All your personal information and resume data are encrypted and stored securely. We do not share your data with third parties without your explicit consent.</p>
+                                <p class="text-subtle">Absolutely. We prioritize your privacy and data security. All your personal information and resume data are encrypted and stored securely. We do not share your data with third parties without your explicit consent.</p>
                             </div>
                         </div>
                          <div class="card rounded-lg">
@@ -344,7 +453,7 @@
                                 <i data-feather="chevron-down" class="chevron-icon transition-transform duration-300"></i>
                             </button>
                             <div class="faq-content hidden p-4 pt-0">
-                                <p class="text-gray-400">To edit a resume, simply go to the "Documents" dashboard and click anywhere on the resume card you wish to modify. This will open it in the editor where you can make your changes and save them.</p>
+                                <p class="text-subtle">To edit a resume, simply go to the "Documents" dashboard and click anywhere on the resume card you wish to modify. This will open it in the editor where you can make your changes and save them.</p>
                             </div>
                         </div>
                     </div>
@@ -362,19 +471,24 @@
         <span>Ask AI coach anything.</span>
     </button>
     <div id="ai-chat-modal" class="fixed bottom-8 right-8 w-[28rem] card rounded-lg shadow-2xl hidden flex-col z-50 fade-in" style="height: 70vh; max-height: 600px;">
-        <div class="p-4 flex justify-between items-center border-b dark:border-gray-700">
-            <h2 class="text-lg font-semibold flex items-center space-x-2 text-violet-400">
+        <div class="p-4 flex justify-between items-center border-b" style="border-color: var(--border);">
+            <h2 class="text-lg font-semibold flex items-center space-x-2 text-violet-500">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6.51605 4.87706C6.64507 4.37692 7.35534 4.37692 7.48435 4.87706L7.74678 5.89437C7.79223 6.07058 7.92983 6.20817 8.10604 6.25363L9.12334 6.51605C9.62349 6.64507 9.62349 7.35534 9.12334 7.48435L8.10604 7.74678C7.92983 7.79223 7.79223 7.92983 7.74678 8.10604L7.48435 9.12334C7.35534 9.62349 6.64507 9.62349 6.51605 9.12334L6.25363 8.10604C6.20817 7.92983 6.07058 7.79223 5.89437 7.74678L4.87706 7.48435C4.37692 7.35534 4.37692 6.64507 4.87706 6.51605L5.89437 6.25363C6.07058 6.20817 6.20817 6.07058 6.25363 5.89437L6.51605 4.87706Z" fill="currentColor"></path><path d="M13.0371 6.13379C13.2064 5.71912 13.7936 5.71912 13.9629 6.13379L15.5949 10.1311C15.6457 10.2555 15.7445 10.3543 15.8689 10.4051L19.8662 12.0371C20.2809 12.2064 20.2809 12.7936 19.8662 12.9629L15.8689 14.5949C15.7445 14.6457 15.6457 14.7445 15.5949 14.8689L13.9629 18.8662C13.7936 19.2809 13.2064 19.2809 13.0371 18.8662L11.4051 14.8689C11.3543 14.7445 11.2555 14.6457 11.1311 14.5949L7.13379 12.9629C6.71912 12.7936 6.71912 12.2064 7.13379 12.0371L11.1311 10.4051C11.2555 10.3543 11.3543 10.2555 11.4051 10.1311L13.0371 6.13379Z" fill="currentColor" stroke="currentColor" stroke-width="1.4"></path></svg>
                 <span>AI Coach</span>
             </h2>
-            <button id="close-chat-modal" class="p-1 rounded-full hover:bg-gray-600">
-                <i data-feather="minus"></i>
-            </button>
+            <div class="flex items-center space-x-2">
+                <button id="toggle-chat-size-btn" class="p-1 rounded-full text-subtle hover:bg-gray-200 dark:hover:bg-gray-600">
+                    <i data-feather="maximize-2" class="w-5 h-5"></i>
+                </button>
+                <button id="close-chat-modal" class="p-1 rounded-full text-subtle hover:bg-gray-200 dark:hover:bg-gray-600">
+                    <i data-feather="minus" class="w-5 h-5"></i>
+                </button>
+            </div>
         </div>
         <div id="chat-window-modal" class="flex-1 p-4 overflow-y-auto space-y-4">
              <!-- Messages will be injected here -->
         </div>
-        <div class="p-4 border-t dark:border-gray-700 flex gap-2">
+        <div class="p-4 border-t flex gap-2" style="border-color: var(--border);">
             <input id="chat-input-modal" type="text" placeholder="Ask AI coach anything..." class="w-full p-3 rounded-md input-field">
             <button id="send-chat-btn-modal" class="p-3 rounded-md btn-primary"><i data-feather="send"></i></button>
         </div>
@@ -384,7 +498,7 @@
     <div id="confirmation-modal-backdrop" class="fixed inset-0 hidden items-center justify-center p-4">
         <div id="confirmation-modal" class="card rounded-lg shadow-2xl p-6 w-full max-w-md">
             <h2 id="modal-title" class="text-xl font-semibold mb-4">Confirm Action</h2>
-            <p id="modal-message" class="text-gray-300 mb-4"></p>
+            <p id="modal-message" class="text-subtle mb-4"></p>
             <input type="text" id="modal-input" class="w-full p-3 rounded-md input-field hidden mb-4" placeholder="Enter new name...">
             <div class="flex justify-end space-x-3">
                 <button id="modal-cancel-btn" class="p-2 px-4 rounded-md btn-utility">Cancel</button>
@@ -487,7 +601,10 @@ let skills = [], experienceCount = 0, certificationCount = 0;
                     }
                 }
 
-                if (viewId === 'dashboard') renderRecentDocuments();
+                if (viewId === 'dashboard') {
+                    renderRecentDocuments();
+                    updateDashboardProgress();
+                }
                 if (viewId === 'documents') renderDocumentsView();
                 if (viewId === 'settings') {
                     document.getElementById('settings-firstName').value = currentUser.firstName;
@@ -508,7 +625,7 @@ let skills = [], experienceCount = 0, certificationCount = 0;
                 }
             }));
             
-            document.querySelectorAll('.progress-input').forEach(input => input.addEventListener('input', updateProgress));
+            document.querySelectorAll('.progress-input').forEach(input => input.addEventListener('input', updateEditorProgress));
             
             const mainContent = document.getElementById('main-content');
             mainContent.addEventListener('click', e => {
@@ -521,9 +638,10 @@ let skills = [], experienceCount = 0, certificationCount = 0;
                 }
             });
 
+            loadTheme();
             addMessageToChat('Hello! I’m your personal AI coach. How can I assist you with your professional journey today?', 'ai');
             updateUserInfoUI();
-            updateProgress();
+            updateDashboardProgress();
             showView('dashboard');
             addExperience();
             addCertification();
@@ -543,7 +661,7 @@ let skills = [], experienceCount = 0, certificationCount = 0;
             addCertification();
             emailValidationIcon.innerHTML = ''; 
             window.scrollTo(0,0); 
-            updateProgress();
+            updateEditorProgress();
         }
         
         window.toggleMenu = function(event, menuId) {
@@ -561,14 +679,15 @@ let skills = [], experienceCount = 0, certificationCount = 0;
              }
         });
 
-        const RESUME_PREVIEW_SVG = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjI4MiIgdmlld0JveD0iMCAwIDIwMCAyODIiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjIwMCIgaGVpZ2h0PSIyODIiIHJ4PSI4IiBmaWxsPSIjMWYyOTM3Ii8+PHJlY3QgeD0iMTUiIHk9IjE1IiB3aWR0aD0iMTcwIiBoZWlnaHQ9IjQiIHJ4PSIyIiBmaWxsPSIjOGI1Y2Y2Ii8+PHJlY3QgeD0iMTUiIHk9IjMwIiB3aWR0aD0iNTUiIGhlaWdodD0iMTEiIHJ4PSIyIiBmaWxsPSIjNWIyMWI2Ii8+PHJlY3QgeD0iMTUiIHk9IjUwIiB3aWR0aD0iNDUiIGhlaWdodD0iOCIgcng9IjIiIGZpbGw9IiM0YjU1NjMiLz48cmVjdCB4PSIxNSIgeT0iNjUiIHdpZHRoPSI0NSIgaGVpZ2h0PSI4IiByeD0iMiIgZmlsbD0iIzRiNTU2MyIvPjxyZWN0IHg9IjE1IiB5PSI4MiIgd2lkdGg9IjU1IiBoZWlnaHQ9IjExIiByeD0iMiIgZmlsbD0iIzViMjFiNiIvPjxyZWN0IHg9IjE1IiB5PSIxMDIiIHdpZHRoPSI0NSIgaGVpZ2h0PSI4IiByeD0iMiIgZmlsbD0iIzM3NDE1MSIvPjxyZWN0IHg9Ijc1IiB5PSIzMCIgd2lkdGg9IjExMCIgaGVpZ2h0PSI4IiByeD0iMiIgZmlsbD0iI2QxZDVkYiIvPjxyZWN0IHg9Ijc1IiB5PSI0MiIgd2lkdGg9Ijg1IiBoZWlnaHQ9IjgiIHJ4PSIyIiBmaWxsPSIjOWNhM2FmIi8+PHJlY3QgeD0iNzUiIHk9IjU4IiB3aWR0aD0iOTUiIGhlaWdodD0iNSIgcng9IjIiIGZpbGw9IiMzNzQxNTEiLz48cmVjdCB4PSI3NSIgeT0iNjYiIHdpZHRoPSIxMDUiIGhlaWdodD0iNSIgcng9IjIiIGZpbGw9IiMzNzQxNTEiLz48cmVjdCB4PSI3NSIgeT0iNzgiIHdpZHRoPSIxMTAiIGhlaWdodD0iOCIgcng9IjIiIGZpbGw9IiNkMWQ1ZGIiLz48cmVjdCB4PSI3NSIgeT0iOTAiIHdpZHRoPSI5NSIgaGVpZ2h0PSI4IiByeD0iMiIgZmlsbD0iIzljYTNhZiIvPjxyZWN0IHg9Ijc1IiB5PSIxMDYiIHdpZHRoPSIxMDMiIGhlaWdodD0iNSIgcng9IjIiIGZpbGw9IiMzNzQxNTEiLz48cmVjdCB4PSI3NSIgeT0iMTE0IiB3aWR0aD0iNjAiIGhlaWdodD0iNSIgcng9IjIiIGZpbGw9IiMzNzQxNTEiLz48cmVjdCB4PSIyMCIgeT0iMTcwIiB3aWR0aD0iMTYwIiBoZWlnaHQ9IjUiIHJ4PSIyIiBmaWxsPSIjMTExODI3Ii8+PHJlY3QgeD0iMTUiIHk9IjI2NCIgd2lkdGg9IjE3MCIgaGVpZ2h0PSI0IiByeD0iMiIgZmlsbD0iIzdjM2FlZCIvPjwvc3ZnPg==";
+        // --- **FIX 1**: Replaced complex SVG with a simpler placeholder ---
+        const RESUME_PREVIEW_SVG = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjI4MyIgdmlld0JveD0iMCAwIDIwMCAyODMiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjIwMCIgaGVpZ2h0PSIyODMiIHJ4PSI4IiBmaWxsPSJ2YXIoLS1jYXJkLWJnKSIvPjxyZWN0IHg9IjE1IiB5PSIxNSIgd2lkdGg9IjE3MCIgaGVpZ2h0PSI0IiByeD0iMiIgZmlsbD0idmFyKC0tcHJpbWFyeS1wdXJwbGUpIiBvcGFjaXR5PSIwLjciLz48cmVjdCB4PSIxNSIgeT0iMzIiIHdpZHRoPSI1NSIgaGVpZ2h0PSIxMSIgcng9IjIiIGZpbGw9InZhcigtLXByaW1hcnktcHVycGxlKSIvPjxyZWN0IHg9IjE1IiB5PSI1MiIgd2lkdGg9IjQ1IiBoZWlnaHQ9IjgiIHJ4PSIyIiBmaWxsPSJ2YXIoLS1ib3JkZXIpIi8+PHJlY3QgeD0iMTUiIHk9IjY3IiB3aWR0aD0iNDUiIGhlaWdodD0iOCIgcng9IjIiIGZpbGw9InZhcigtLWJvcmRlcikiLz48cmVjdCB4PSIxNSIgeT0iODUiIHdpZHRoPSI1NSIgaGVpZ2h0PSIxMSIgcng9IjIiIGZpbGw9InZhcigtLXByaW1hcnktcHVycGxlKSIvPjxyZWN0IHg9IjE1IiB5PSIxMDgiIHdpZHRoPSI0NSIgaGVpZ2h0PSI4IiByeD0iMiIgZmlsbD0idmFyKC0tYm9yZGVyKSIvPjxyZWN0IHg9Ijc1IiB5PSIzMiIgd2lkdGg9IjExMCIgaGVpZ2h0PSI4IiByeD0iMiIgZmlsbD0idmFyKC0tYm9yZGVyKSIvPjxyZWN0IHg9Ijc1IiB5PSI0NCIgd2lkdGg9Ijg1IiBoZWlnaHQ9IjgiIHJ4PSIyIiBmaWxsPSJ2YXIoLS1pbnB1dC1iZykiLz48cmVjdCB4PSI3NSIgeT0iNjAiIHdpZHRoPSI5NSIgaGVpZ2h0PSI1IiByeD0iMiIgZmlsbD0idmFyKC0tYm9yZGVyKSIvPjxyZWN0IHg9Ijc1IiB5PSI2OCIgd2lkdGg9IjEwNSIgaGVpZ2h0PSI1IiByeD0iMiIgZmlsbD0idmFyKC0tYm9yZGVyKSIvPjxyZWN0IHg9Ijc1IiB5PSI4MCIgd2lkdGg9IjExMCIgaGVpZ2h0PSI4IiByeD0iMiIgZmlsbD0idmFyKC0tYm9yZGVyKSIvPjxyZWN0IHg9Ijc1IiB5PSI5MiIgd2lkdGg9Ijk1IiBoZWlnaHQ9IjgiIHJ4PSIyIiBmaWxsPSJ2YXIoLS1pbnB1dC1iZykiLz48cmVjdCB4PSI3NSIgeT0iMTA4IiB3aWR0aD0iMTAzIiBoZWlnaHQ9IjUiIHJ4PSIyIiBmaWxsPSJ2YXIoLS1ib3JkZXIpIi8+PHJlY3QgeD0iNzUiIHk9IjExNiIgd2lkdGg9IjYwIiBoZWlnaHQ9IjUiIHJ4PSIyIiBmaWxsPSJ2YXIoLS1ib3JkZXIpIi8+PHJlY3QgeD0iMjAiIHk9IjE3MCIgd2lkdGg9IjE2MCIgaGVpZ2h0PSI1IiByeD0iMiIgZmlsbD0idmFyKC0tYmFja2dyb3VuZCkiLz48cmVjdCB4PSIxNSIgeT0iMjY0IiB3aWR0aD0iMTcwIiBoZWlnaHQ9IjQiIHJ4PSIyIiBmaWxsPSJ2YXIoLS1wcmltYXJ5LXB1cnBsZSkiIG9wYWNpdHk9IjAuNyIvPjwvc3ZnPg==";
 
         function renderDocumentsView() {
             const grid = document.getElementById('document-cards-grid');
             grid.innerHTML = ''; 
 
             if (savedProfiles.length === 0) {
-                 grid.innerHTML = '<div class="w-full text-center text-gray-400"><i data-feather="file" class="w-10 h-10 mx-auto mb-3"></i><p class="text-lg">No resumes saved yet.</p><p>Click "Create New" to start your first resume!</p></div>';
+                 grid.innerHTML = `<div class="w-full text-center text-subtle"><i data-feather="file" class="w-10 h-10 mx-auto mb-3"></i><p class="text-lg">No resumes saved yet.</p><p>Click "Create New" to start your first resume!</p></div>`;
                  feather.replace();
                  return;
             }
@@ -584,35 +703,35 @@ let skills = [], experienceCount = 0, certificationCount = 0;
                 const imageUrl = RESUME_PREVIEW_SVG;
                 
                 card.innerHTML = `
-                    <div class="h-56 relative bg-gray-700 flex items-center justify-center p-2 border-b border-gray-600 group-hover:bg-gray-600 transition duration-150">
+                    <div class="h-56 relative bg-gray-100 dark:bg-gray-700 flex items-center justify-center p-2 border-b border-gray-200 dark:border-gray-600 group-hover:bg-gray-200 dark:group-hover:bg-gray-600 transition duration-150">
                         <img src="${imageUrl}" alt="Resume Preview" class="h-full w-auto rounded shadow-lg object-contain">
                     </div>
                     <div class="p-4 flex-1 flex flex-col">
                         <div class="flex items-start justify-between mb-2">
-                            <span class="text-lg font-semibold text-gray-100 group-hover:text-violet-400 truncate w-3/4">
-                                ${profile.fullName}
+                            <span class="text-lg font-semibold group-hover:text-violet-500 truncate w-3/4">
+                                ${profile.fullName || `${profile.firstName} ${profile.lastName}` || 'Untitled Resume'}
                             </span>
                             <div class="relative inline-block text-left" onclick="event.stopPropagation();">
-                                <button data-dropdown-toggle="${profile.id}-menu" class="p-1 rounded-full hover:bg-gray-600 focus:outline-none" onclick="toggleMenu(event, '${profile.id}-menu')">
+                                <button data-dropdown-toggle="${profile.id}-menu" class="p-1 rounded-full text-subtle hover:bg-gray-200 dark:hover:bg-gray-600 focus:outline-none" onclick="toggleMenu(event, '${profile.id}-menu')">
                                     <i data-feather="more-vertical" class="w-5 h-5 pointer-events-none"></i>
                                 </button>
                                 <div id="${profile.id}-menu" class="absolute right-0 mt-2 w-40 card p-1 rounded-md shadow-lg document-dropdown-menu hidden z-20">
-                                    <button onclick="promptRename('${profile.id}', '${profile.fullName}')" class="w-full text-left flex items-center p-2 text-sm rounded-md hover:bg-gray-700">
+                                    <button onclick="promptRename('${profile.id}', '${profile.fullName || `${profile.firstName} ${profile.lastName}`}')" class="w-full text-left flex items-center p-2 text-sm rounded-md hover:bg-gray-100 dark:hover:bg-gray-700">
                                         <i data-feather="edit-2" class="w-4 h-4 mr-2"></i>Rename
                                     </button>
-                                    <button onclick="confirmDelete('${profile.id}', '${profile.fullName}')" class="w-full text-left flex items-center p-2 text-sm rounded-md hover:bg-red-900 text-red-500">
+                                    <button onclick="confirmDelete('${profile.id}', '${profile.fullName || `${profile.firstName} ${profile.lastName}`}')" class="w-full text-left flex items-center p-2 text-sm rounded-md text-danger-text hover:bg-danger-hover">
                                         <i data-feather="trash-2" class="w-4 h-4 mr-2"></i>Delete
                                     </button>
                                 </div>
                             </div>
                         </div>
-                        <p class="text-xs text-gray-400 mb-4 flex-1">Updated ${profile.lastUpdate}</p>
+                        <p class="text-xs text-subtle mb-4 flex-1">Updated ${profile.lastUpdate}</p>
                         <div class="document-actions space-y-2 mt-auto" onclick="event.stopPropagation();">
-                             <button onclick="exportToPDF('${profile.id}')" class="w-full flex items-center p-2 rounded-md hover:bg-gray-700 text-sm font-medium text-red-400">
+                             <button onclick="exportToPDF('${profile.id}')" class="w-full flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 text-sm font-medium text-red-500 dark:text-red-400">
                                 <svg class="w-5 h-5 mr-2" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8 3H16V7H20V17C20 18.1046 19.1046 19 18 19H6C4.89543 19 4 18.1046 4 17V5C4 3.89543 4.89543 3 6 3H8Z" fill="#FEE2E2"></path><path d="M16 3L20 7H16V3Z" fill="#F87171"></path><path fill-rule="evenodd" clip-rule="evenodd" d="M12.4142 11.5858C12.7497 11.2503 13.2503 11.2503 13.5858 11.5858L15.2929 13.2929C15.6834 13.6834 15.6834 14.3166 15.2929 14.7071C14.9024 15.0976 14.2692 15.0976 13.8787 14.7071L13 13.8284V16C13 16.5523 12.5523 17 12 17C11.4477 17 11 16.5523 11 16V13.8284L10.1213 14.7071C9.7308 15.0976 9.09763 15.0976 8.70711 14.7071C8.31658 14.3166 8.31658 13.6834 8.70711 13.2929L10.4142 11.5858C10.7497 11.2503 11.2503 11.2503 11.5858 11.5858H12.4142Z" fill="#DC2626"></path></svg>
                                 Download PDF
                              </button>
-                             <button onclick="exportToPPT('${profile.id}')" class="w-full flex items-center p-2 rounded-md hover:bg-gray-700 text-sm font-medium text-orange-400">
+                             <button onclick="exportToPPT('${profile.id}')" class="w-full flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 text-sm font-medium text-orange-500 dark:text-orange-400">
                                 <svg class="w-5 h-5 mr-2" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8 3H16V7H20V17C20 18.1046 19.1046 19 18 19H6C4.89543 19 4 18.1046 4 17V5C4 3.89543 4.89543 3 6 3H8Z" fill="#FFEDD5"></path><path d="M16 3L20 7H16V3Z" fill="#FB923C"></path><path d="M12 11C10.8954 11 10 11.8954 10 13V16C10 17.1046 10.8954 18 12 18C13.1046 18 14 17.1046 14 16V13C14 11.8954 13.1046 11 12 11Z" fill="#F97316"></path></svg>
                                 Export to PPT
                             </button>
@@ -628,24 +747,24 @@ let skills = [], experienceCount = 0, certificationCount = 0;
             const list = document.getElementById('recent-documents-list');
             list.innerHTML = '';
             if (savedProfiles.length === 0) {
-                list.innerHTML = `<p class="text-gray-400 text-center">No recent documents.</p>`;
+                list.innerHTML = `<p class="text-subtle text-center">No recent documents.</p>`;
                 return;
             }
             const recent = [...savedProfiles].sort((a,b) => new Date(b.lastUpdate) - new Date(a.lastUpdate)).slice(0, 3);
             recent.forEach(profile => {
                 const item = document.createElement('a');
                 item.href = '#';
-                item.className = 'flex items-center p-2 -m-2 rounded-lg hover:bg-gray-700 transition-colors';
+                item.className = 'flex items-center p-2 -m-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors';
                 item.onclick = (e) => { e.preventDefault(); loadProfileForEditing(profile.id, 'dashboard'); };
                 item.innerHTML = `
-                    <div class="w-8 h-8 rounded-md bg-violet-900 flex items-center justify-center mr-4 shrink-0">
-                        <i data-feather="file-text" class="text-violet-400 w-5 h-5"></i>
+                    <div class="w-8 h-8 rounded-md bg-violet-100 dark:bg-violet-900 flex items-center justify-center mr-4 shrink-0">
+                        <i data-feather="file-text" class="text-violet-500 dark:text-violet-400 w-5 h-5"></i>
                     </div>
                     <div class="flex-1 truncate">
-                        <p class="font-semibold text-gray-200">${profile.fullName}</p>
-                        <p class="text-sm text-gray-400">Updated ${profile.lastUpdate}</p>
+                        <p class="font-semibold">${profile.fullName || `${profile.firstName} ${profile.lastName}`}</p>
+                        <p class="text-sm text-subtle">Updated ${profile.lastUpdate}</p>
                     </div>
-                    <i data-feather="chevron-right" class="text-gray-500"></i>
+                    <i data-feather="chevron-right" class="text-subtle"></i>
                 `;
                 list.appendChild(item);
             });
@@ -681,71 +800,152 @@ let skills = [], experienceCount = 0, certificationCount = 0;
         window.confirmDelete = function(profileId, profileName) {
             openModal('Confirm Deletion', `Are you sure you want to permanently delete the resume: "${profileName}"? This action cannot be undone.`, 'Delete', () => { deleteProfile(profileId); closeModal(); }, false, '', 'danger');
         }
-        window.deleteProfile = function(profileId) { savedProfiles = savedProfiles.filter(p => p.id !== profileId); renderDocumentsView(); renderRecentDocuments(); updateProgress(); }
+        window.deleteProfile = function(profileId) { savedProfiles = savedProfiles.filter(p => p.id !== profileId); localStorage.setItem('savedProfiles', JSON.stringify(savedProfiles)); renderDocumentsView(); renderRecentDocuments(); updateDashboardProgress(); }
         window.promptRename = function(profileId, currentName) {
-            openModal('Rename Resume', `Enter a new name for the resume "${currentName}":`, 'Rename', () => { const newName = modalInput.value.trim(); if (newName) { renameProfile(profileId, newName); closeModal(); } else { modalMessage.textContent = "Name cannot be empty."; } }, true, currentName, 'primary');
+            openModal('Rename Resume', `Enter a new name for the resume "${currentName}":`, 'Rename', () => { 
+                const newName = modalInput.value.trim(); 
+                if (newName) { 
+                    renameProfile(profileId, newName); 
+                    closeModal(); 
+                } else { 
+                    modalInput.placeholder = "Name cannot be empty.";
+                    modalInput.classList.add('border-danger-red', 'placeholder-danger-text');
+                } 
+            }, true, currentName, 'primary');
+            modalInput.classList.remove('border-danger-red', 'placeholder-danger-text');
         }
-        window.renameProfile = function(profileId, newName) { const index = savedProfiles.findIndex(p => p.id === profileId); if (index > -1) { savedProfiles[index].fullName = newName; savedProfiles[index].lastUpdate = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }); renderDocumentsView(); renderRecentDocuments();} }
+        window.renameProfile = function(profileId, newName) { 
+            const index = savedProfiles.findIndex(p => p.id === profileId); 
+            if (index > -1) { 
+                // When renaming, update both new and old fields for compatibility
+                savedProfiles[index].fullName = newName; 
+                const nameParts = newName.split(' ');
+                savedProfiles[index].firstName = nameParts[0];
+                savedProfiles[index].lastName = nameParts.slice(1).join(' ');
+                savedProfiles[index].lastUpdate = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }); 
+                localStorage.setItem('savedProfiles', JSON.stringify(savedProfiles));
+                renderDocumentsView(); 
+                renderRecentDocuments();
+            } 
+        }
         
         function updateUserInfoUI() {
             const fullName = `${currentUser.firstName} ${currentUser.lastName}`;
             document.getElementById('user-menu-name').textContent = fullName;
             document.getElementById('user-menu-email').textContent = currentUser.email;
-            document.getElementById('dashboard-greeting').textContent = `Hi ${fullName}!`;
-            document.getElementById('fullName').placeholder = `e.g., ${fullName}`;
+            document.getElementById('dashboard-greeting').textContent = `Hi ${currentUser.firstName}!`;
+            document.getElementById('firstName').placeholder = `e.g., ${currentUser.firstName}`;
+            document.getElementById('lastName').placeholder = `e.g., ${currentUser.lastName}`;
         }
         
-        function updateProgress() {
-            const fields = [ document.getElementById('fullName').value, document.getElementById('jobTitle').value, document.getElementById('email').value, document.getElementById('phone').value, document.getElementById('linkedin').value, document.getElementById('summary').value ];
-            let completed = fields.filter(f => f.trim() !== '').length;
+        function updateEditorProgress() {
+            const fields = [
+                document.getElementById('firstName').value,
+                document.getElementById('lastName').value,
+                document.getElementById('jobTitle').value,
+                document.getElementById('email').value,
+                document.getElementById('phone').value,
+                document.getElementById('linkedin').value,
+                document.getElementById('summary').value
+            ];
+            let completed = fields.filter(f => f && f.trim() !== '').length;
             const totalFields = fields.length + 3; // +3 for experience, skills, and certifications
             if (document.querySelector('.exp-title')?.value.trim()) completed++;
             if (skills.length > 0) completed++;
             if (document.querySelector('.cert-name')?.value.trim()) completed++;
             const percentage = Math.round((completed / totalFields) * 100);
-            document.getElementById('resume-progress-bar').style.width = `${percentage}%`;
-            document.getElementById('resume-progress-text').textContent = `${percentage}%`;
+            
+            // Update dashboard progress (if it's visible)
+            updateDashboardProgress(percentage);
+        }
+
+        function updateDashboardProgress() {
+            let percentage = 0;
+            let subtext = "Create your first resume to track progress!";
+            const progressCircle = document.getElementById('progress-ring-circle');
+            const progressText = document.getElementById('progress-ring-text');
+            const subtextEl = document.getElementById('dashboard-strength-subtext');
+
+            if (savedProfiles.length > 0) {
+                // Find the most recently updated profile
+                const recentProfile = [...savedProfiles].sort((a,b) => new Date(b.lastUpdate) - new Date(a.lastUpdate))[0];
+                
+                // Calculate its progress
+                const fields = [
+                    recentProfile.firstName,
+                    recentProfile.lastName,
+                    recentProfile.jobTitle,
+                    recentProfile.email,
+                    recentProfile.phone,
+                    recentProfile.linkedin,
+                    recentProfile.summary
+                ];
+                let completed = fields.filter(f => f && f.trim() !== '').length;
+                const totalFields = fields.length + 3; // +3 for experience, skills, and certifications
+
+                if (recentProfile.experiences && recentProfile.experiences.length > 0 && recentProfile.experiences[0].title) completed++;
+                if (recentProfile.skills && recentProfile.skills.length > 0) completed++;
+                if (recentProfile.certifications && recentProfile.certifications.length > 0 && recentProfile.certifications[0].name) completed++;
+                
+                percentage = Math.round((completed / totalFields) * 100);
+                const profileName = recentProfile.fullName || `${recentProfile.firstName} ${recentProfile.lastName}`;
+                subtext = `Your top profile, "${profileName}", is ${percentage}% complete.`;
+            }
+
+            if (progressCircle) {
+                const radius = progressCircle.r.baseVal.value;
+                const circumference = 2 * Math.PI * radius;
+                const offset = circumference - (percentage / 100) * circumference;
+                progressCircle.style.strokeDashoffset = offset;
+            }
+            if (progressText) {
+                progressText.textContent = `${percentage}%`;
+            }
+            // --- **FIX 2**: Removed the stray "D" typo ---
+            if (subtextEl) {
+                subtextEl.textContent = subtext;
+            }
         }
 
         const experienceList = document.getElementById('experience-list'), addExperienceBtn = document.getElementById('add-experience');
         function addExperience(data = {}) {
             experienceCount++; const div = document.createElement('div');
-            div.className = 'p-4 border rounded-md relative space-y-4 border-gray-700';
-            div.innerHTML = `<button class="absolute top-3 right-3 w-8 h-8 flex items-center justify-center rounded-full text-gray-400 hover:bg-gray-700" onclick="this.parentElement.remove(); updateProgress();"><i data-feather="trash-2" class="w-4 h-4"></i></button>
-                <div><label for="exp-title-${experienceCount}" class="block text-sm font-medium text-gray-400 mb-1">Job Title</label><input type="text" id="exp-title-${experienceCount}" placeholder="e.g., Product Manager" class="w-full p-2 rounded-md input-field exp-title progress-input" value="${data.title || ''}"></div>
-                <div><label for="exp-company-${experienceCount}" class="block text-sm font-medium text-gray-400 mb-1">Company</label><input type="text" id="exp-company-${experienceCount}" placeholder="e.g., TechCorp" class="w-full p-2 rounded-md input-field exp-company progress-input" value="${data.company || ''}"></div>
+            div.className = 'p-4 border rounded-md relative space-y-4';
+            div.innerHTML = `<button class="absolute top-3 right-3 w-8 h-8 flex items-center justify-center rounded-full text-subtle hover:bg-gray-200 dark:hover:bg-gray-700" onclick="this.parentElement.remove(); updateEditorProgress();"><i data-feather="trash-2" class="w-4 h-4"></i></button>
+                <div><label for="exp-title-${experienceCount}" class="block text-sm font-medium text-subtle mb-1">Job Title</label><input type="text" id="exp-title-${experienceCount}" placeholder="e.g., Product Manager" class="w-full p-2 rounded-md input-field exp-title progress-input" value="${data.title || ''}"></div>
+                <div><label for="exp-company-${experienceCount}" class="block text-sm font-medium text-subtle mb-1">Company</label><input type="text" id="exp-company-${experienceCount}" placeholder="e.g., TechCorp" class="w-full p-2 rounded-md input-field exp-company progress-input" value="${data.company || ''}"></div>
                 <div class="flex gap-4">
-                    <div class="w-1/2"><label for="exp-start-${experienceCount}" class="block text-sm font-medium text-gray-400 mb-1">Start Date</label><input type="date" id="exp-start-${experienceCount}" title="Start Date" class="w-full p-2 rounded-md input-field exp-start progress-input" value="${data.start || ''}"></div>
-                    <div class="w-1/2"><label for="exp-end-${experienceCount}" class="block text-sm font-medium text-gray-400 mb-1">End Date</label><input type="date" id="exp-end-${experienceCount}" title="End Date" class="w-full p-2 rounded-md input-field exp-end progress-input" value="${data.end || ''}"></div>
+                    <div class="w-1/2"><label for="exp-start-${experienceCount}" class="block text-sm font-medium text-subtle mb-1">Start Date</label><input type="date" id="exp-start-${experienceCount}" title="Start Date" class="w-full p-2 rounded-md input-field exp-start progress-input" value="${data.start || ''}"></div>
+                    <div class="w-1/2"><label for="exp-end-${experienceCount}" class="block text-sm font-medium text-subtle mb-1">End Date</label><input type="date" id="exp-end-${experienceCount}" title="End Date" class="w-full p-2 rounded-md input-field exp-end progress-input" value="${data.end || ''}"></div>
                 </div>
-                <div><label for="exp-desc-${experienceCount}" class="block text-sm font-medium text-gray-400 mb-1">Key Responsibilities & Achievements</label><textarea id="exp-desc-${experienceCount}" placeholder="Describe your role..." class="w-full p-2 rounded-md input-field exp-desc progress-input" rows="3">${data.desc || ''}</textarea></div>
-                <div><label class="block text-sm font-medium text-gray-400 mb-1">Technologies Used</label><div class="flex"><input type="text" placeholder="Add tech and press Enter" class="flex-grow p-2 rounded-l-md input-field exp-tech-input"><button type="button" class="p-2 rounded-r-md btn-secondary add-tech-btn"><i data-feather="plus" class="pointer-events-none"></i></button></div><div class="flex flex-wrap gap-2 mt-2 exp-tech-list">${(data.technologies || []).map(tech => `<span class="tech-tag bg-gray-700 text-gray-300 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full flex items-center">${tech}<button type="button" class="remove-tech-btn ml-2 text-gray-400 hover:text-gray-100"><i data-feather="x" class="w-3 h-3 pointer-events-none"></i></button></span>`).join('')}</div></div>`;
+                <div><label for="exp-desc-${experienceCount}" class="block text-sm font-medium text-subtle mb-1">Key Responsibilities & Achievements</label><textarea id="exp-desc-${experienceCount}" placeholder="Describe your role..." class="w-full p-2 rounded-md input-field exp-desc progress-input" rows="3">${data.desc || ''}</textarea></div>
+                <div><label class="block text-sm font-medium text-subtle mb-1">Technologies Used</label><div class="flex"><input type="text" placeholder="Add tech and press Enter" class="flex-grow p-2 rounded-l-md input-field exp-tech-input"><button type="button" class="p-2 rounded-r-md btn-secondary add-tech-btn"><i data-feather="plus" class="pointer-events-none"></i></button></div><div class="flex flex-wrap gap-2 mt-2 exp-tech-list">${(data.technologies || []).map(tech => `<span class="tech-tag bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-300 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full flex items-center">${tech}<button type="button" class="remove-tech-btn ml-2 text-subtle hover:text-gray-900 dark:hover:text-gray-100"><i data-feather="x" class="w-3 h-3 pointer-events-none"></i></button></span>`).join('')}</div></div>`;
             experienceList.appendChild(div);
-            div.querySelectorAll('.progress-input').forEach(input => input.addEventListener('input', updateProgress));
-            feather.replace(); updateProgress();
+            div.querySelectorAll('.progress-input').forEach(input => input.addEventListener('input', updateEditorProgress));
+            feather.replace(); updateEditorProgress();
         }
         addExperienceBtn.addEventListener('click', () => addExperience());
-        experienceList.addEventListener('click', e => { if (e.target.closest('.remove-tech-btn')) { e.target.closest('.tech-tag').remove(); } if (e.target.closest('.add-tech-btn')) { const div = e.target.closest('.p-4'), input = div.querySelector('.exp-tech-input'), list = div.querySelector('.exp-tech-list'), name = input.value.trim(); if (name) { const span = document.createElement('span'); span.className = 'tech-tag bg-gray-700 text-gray-300 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full flex items-center'; span.innerHTML = `${name}<button type="button" class="remove-tech-btn ml-2 text-gray-400 hover:text-gray-100"><i data-feather="x" class="w-3 h-3 pointer-events-none"></i></button></span>`; list.appendChild(span); feather.replace(); input.value = ''; } } });
+        experienceList.addEventListener('click', e => { if (e.target.closest('.remove-tech-btn')) { e.target.closest('.tech-tag').remove(); } if (e.target.closest('.add-tech-btn')) { const div = e.target.closest('.p-4'), input = div.querySelector('.exp-tech-input'), list = div.querySelector('.exp-tech-list'), name = input.value.trim(); if (name) { const span = document.createElement('span'); span.className = 'tech-tag bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-300 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full flex items-center'; span.innerHTML = `${name}<button type="button" class="remove-tech-btn ml-2 text-subtle hover:text-gray-900 dark:hover:text-gray-100"><i data-feather="x" class="w-3 h-3 pointer-events-none"></i></button></span>`; list.appendChild(span); feather.replace(); input.value = ''; } } });
         experienceList.addEventListener('keypress', e => { if (e.key === 'Enter' && e.target.classList.contains('exp-tech-input')) { e.preventDefault(); e.target.closest('.p-4').querySelector('.add-tech-btn').click(); } });
         
         const certificationList = document.getElementById('certification-list'), addCertificationBtn = document.getElementById('add-certification');
         function addCertification(data = {}) {
             certificationCount++; const div = document.createElement('div');
-            div.className = 'p-4 border rounded-md relative space-y-4 border-gray-700';
-            div.innerHTML = `<button class="absolute top-3 right-3 w-8 h-8 flex items-center justify-center rounded-full text-gray-400 hover:bg-gray-700" onclick="this.parentElement.remove(); updateProgress();"><i data-feather="trash-2" class="w-4 h-4"></i></button>
-                <div><label for="cert-name-${certificationCount}" class="block text-sm font-medium text-gray-400 mb-1">Certification Name</label><input type="text" id="cert-name-${certificationCount}" placeholder="e.g., Certified Cloud Practitioner" class="w-full p-2 rounded-md input-field cert-name progress-input" value="${data.name || ''}"></div>
+            div.className = 'p-4 border rounded-md relative space-y-4';
+            div.innerHTML = `<button class="absolute top-3 right-3 w-8 h-8 flex items-center justify-center rounded-full text-subtle hover:bg-gray-200 dark:hover:bg-gray-700" onclick="this.parentElement.remove(); updateEditorProgress();"><i data-feather="trash-2" class="w-4 h-4"></i></button>
+                <div><label for="cert-name-${certificationCount}" class="block text-sm font-medium text-subtle mb-1">Certification Name</label><input type="text" id="cert-name-${certificationCount}" placeholder="e.g., Certified Cloud Practitioner" class="w-full p-2 rounded-md input-field cert-name progress-input" value="${data.name || ''}"></div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div><label for="cert-org-${certificationCount}" class="block text-sm font-medium text-gray-400 mb-1">Issuing Organization</label><input type="text" id="cert-org-${certificationCount}" placeholder="e.g., Amazon Web Services" class="w-full p-2 rounded-md input-field cert-org progress-input" value="${data.org || ''}"></div>
-                    <div><label for="cert-date-${certificationCount}" class="block text-sm font-medium text-gray-400 mb-1">Date Issued</label><input type="date" id="cert-date-${certificationCount}" class="w-full p-2 rounded-md input-field cert-date progress-input" value="${data.date || ''}"></div>
+                    <div><label for="cert-org-${certificationCount}" class="block text-sm font-medium text-subtle mb-1">Issuing Organization</label><input type="text" id="cert-org-${certificationCount}" placeholder="e.g., Amazon Web Services" class="w-full p-2 rounded-md input-field cert-org progress-input" value="${data.org || ''}"></div>
+                    <div><label for="cert-date-${certificationCount}" class="block text-sm font-medium text-subtle mb-1">Date Issued</label><input type="date" id="cert-date-${certificationCount}" class="w-full p-2 rounded-md input-field cert-date progress-input" value="${data.date || ''}"></div>
                 </div>`;
             certificationList.appendChild(div);
-            div.querySelectorAll('.progress-input').forEach(input => input.addEventListener('input', updateProgress));
-            feather.replace(); updateProgress();
+            div.querySelectorAll('.progress-input').forEach(input => input.addEventListener('input', updateEditorProgress));
+            feather.replace(); updateEditorProgress();
         }
         addCertificationBtn.addEventListener('click', () => addCertification());
 
         const skillsList = document.getElementById('skills-list'), skillInput = document.getElementById('skill-input'), addSkillBtn = document.getElementById('add-skill-btn');
-        function renderSkills() { skillsList.innerHTML = skills.map((s, i) => `<span class="bg-violet-900 text-violet-300 text-sm font-medium mr-2 px-2.5 py-0.5 rounded-full flex items-center">${s}<button class="ml-2 text-violet-400 hover:text-violet-200" data-index="${i}"><i data-feather="x" class="w-3 h-3"></i></button></span>`).join(''); feather.replace(); updateProgress(); }
+        function renderSkills() { skillsList.innerHTML = skills.map((s, i) => `<span class="bg-violet-100 dark:bg-violet-900 text-violet-700 dark:text-violet-300 text-sm font-medium mr-2 px-2.5 py-0.5 rounded-full flex items-center">${s}<button class="ml-2 text-violet-500 dark:text-violet-400 hover:text-violet-700 dark:hover:text-violet-200" data-index="${i}"><i data-feather="x" class="w-3 h-3"></i></button></span>`).join(''); feather.replace(); updateEditorProgress(); }
         function addSkill(name) { if (name && !skills.includes(name)) { skills.push(name); renderSkills(); } skillInput.value = ''; }
         skillInput.addEventListener('keypress', e => { if (e.key === 'Enter') { e.preventDefault(); addSkill(skillInput.value.trim()); } });
         addSkillBtn.addEventListener('click', () => addSkill(skillInput.value.trim()));
@@ -757,40 +957,56 @@ let skills = [], experienceCount = 0, certificationCount = 0;
         function getUserProfileData() { 
             const exps = Array.from(document.querySelectorAll('#experience-list > div')).map(d => ({ title: d.querySelector('.exp-title').value, company: d.querySelector('.exp-company').value, start: d.querySelector('.exp-start').value, end: d.querySelector('.exp-end').value, desc: d.querySelector('.exp-desc').value, technologies: Array.from(d.querySelectorAll('.tech-tag')).map(t => t.innerText.trim()) })); 
             const certs = Array.from(document.querySelectorAll('#certification-list > div')).map(d => ({ name: d.querySelector('.cert-name').value, org: d.querySelector('.cert-org').value, date: d.querySelector('.cert-date').value }));
-            return { fullName: document.getElementById('fullName').value, jobTitle: document.getElementById('jobTitle').value, email: document.getElementById('email').value, phone: `${document.getElementById('selected-code-text').textContent} ${document.getElementById('phone').value}`, linkedin: document.getElementById('linkedin').value, summary: document.getElementById('summary').value, experiences: exps, certifications: certs, skills }; 
+            const firstName = document.getElementById('firstName').value;
+            const lastName = document.getElementById('lastName').value;
+            return { 
+                firstName: firstName,
+                lastName: lastName,
+                fullName: `${firstName} ${lastName}`.trim(), // Keep fullName for compatibility
+                jobTitle: document.getElementById('jobTitle').value, 
+                email: document.getElementById('email').value, 
+                phone: `${document.getElementById('selected-code-text').textContent} ${document.getElementById('phone').value}`, 
+                linkedin: document.getElementById('linkedin').value, 
+                summary: document.getElementById('summary').value, 
+                experiences: exps, 
+                certifications: certs, 
+                skills: skills 
+            }; 
         }
         
         const saveConfirmP = document.getElementById('save-confirm');
-			function saveProfile() {
-        const profileData = getUserProfileData();
-        if (!profileData.fullName) {
-            // ... your validation code is perfect ...
-            return false;
-        }
-        const editingId = document.getElementById('editing-profile-id').value;
-        const lastUpdate = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
-
-        if (editingId) {
-            const index = savedProfiles.findIndex(p => p.id === editingId);
-            if (index > -1) {
-                savedProfiles[index] = { ...savedProfiles[index], ...profileData, lastUpdate };
+        function saveProfile() {
+            const profileData = getUserProfileData();
+            if (!profileData.firstName || !profileData.lastName) {
+                saveConfirmP.textContent = 'First Name and Last Name are required.';
+                saveConfirmP.classList.add('text-danger-text');
+                setTimeout(() => { saveConfirmP.textContent = ''; saveConfirmP.classList.remove('text-danger-text'); }, 3000);
+                return false;
             }
-        } else {
-            const newProfile = { ...profileData, id: `profile_${Date.now()}`, lastUpdate };
-            savedProfiles.push(newProfile);
-            document.getElementById('editing-profile-id').value = newProfile.id;
+            const editingId = document.getElementById('editing-profile-id').value;
+            const lastUpdate = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+
+            if (editingId) {
+                const index = savedProfiles.findIndex(p => p.id === editingId);
+                if (index > -1) {
+                    savedProfiles[index] = { ...savedProfiles[index], ...profileData, lastUpdate };
+                }
+            } else {
+                const newProfile = { ...profileData, id: `profile_${Date.now()}`, lastUpdate };
+                savedProfiles.push(newProfile);
+                document.getElementById('editing-profile-id').value = newProfile.id;
+            }
+
+            localStorage.setItem('savedProfiles', JSON.stringify(savedProfiles));
+            saveConfirmP.textContent = 'Profile saved!';
+            saveConfirmP.classList.remove('text-danger-text');
+            setTimeout(() => saveConfirmP.textContent = '', 3000);
+            
+            renderDocumentsView();
+            renderRecentDocuments();
+            updateDashboardProgress();
+            return true;
         }
-
-        // ==========================================================
-        // === ADD THIS LINE HERE ===================================
-        // ==========================================================
-        localStorage.setItem('savedProfiles', JSON.stringify(savedProfiles));
-
-        renderDocumentsView();
-        renderRecentDocuments();
-        updateProgress();
-        return true;
-    }
 
         window.loadProfileForEditing = function(profileId, fromView = 'documents') {
             const profile = savedProfiles.find(p => p.id === profileId);
@@ -801,7 +1017,18 @@ let skills = [], experienceCount = 0, certificationCount = 0;
             const phoneInput = document.getElementById('phone');
 
             document.getElementById('editing-profile-id').value = profile.id;
-            document.getElementById('fullName').value = profile.fullName || '';
+            
+            // Handle new first/last name fields, with fallback for old 'fullName' data
+            let firstName = profile.firstName || '';
+            let lastName = profile.lastName || '';
+            if (!firstName && !lastName && profile.fullName) {
+                const nameParts = profile.fullName.split(' ');
+                firstName = nameParts[0];
+                lastName = nameParts.slice(1).join(' ');
+            }
+            document.getElementById('firstName').value = firstName;
+            document.getElementById('lastName').value = lastName;
+
             document.getElementById('jobTitle').value = profile.jobTitle || '';
             document.getElementById('email').value = profile.email || '';
             if (profile.phone) {
@@ -841,7 +1068,7 @@ let skills = [], experienceCount = 0, certificationCount = 0;
                 addCertification();
             }
 
-            updateProgress();
+            updateEditorProgress();
             
             // Set the correct return view for the back button
             const editorBackButton = document.querySelector('#editor-view > div:first-child > button');
@@ -850,29 +1077,22 @@ let skills = [], experienceCount = 0, certificationCount = 0;
             showView('editor');
         }
 
-        document.getElementById('save-and-finish-btn').addEventListener('click', () => {
-            if (saveProfile()) {
-                showView('documents');
-            }
+        document.getElementById('save-btn').addEventListener('click', () => {
+            saveProfile(); // Just save, don't switch view
         });
         
-document.getElementById('save-settings-btn').addEventListener('click', () => {
-    // The user's information is updated from the form fields here
-    currentUser.firstName = document.getElementById('settings-firstName').value;
-    currentUser.lastName = document.getElementById('settings-lastName').value;
-    currentUser.email = document.getElementById('settings-email').value;
+        document.getElementById('save-settings-btn').addEventListener('click', () => {
+            currentUser.firstName = document.getElementById('settings-firstName').value;
+            currentUser.lastName = document.getElementById('settings-lastName').value;
+            currentUser.email = document.getElementById('settings-email').value;
 
-    // ==========================================================
-    // === ADD THIS LINE HERE to save the updated user object ===
-    // ==========================================================
-    localStorage.setItem('currentUser', JSON.stringify(currentUser));
+            localStorage.setItem('currentUser', JSON.stringify(currentUser));
 
-    // The rest of the function updates the UI
-    updateUserInfoUI();
-    const confirmEl = document.getElementById('settings-save-confirm');
-    confirmEl.textContent = 'Settings saved successfully!';
-    setTimeout(() => confirmEl.textContent = '', 3000);
-});
+            updateUserInfoUI();
+            const confirmEl = document.getElementById('settings-save-confirm');
+            confirmEl.textContent = 'Settings saved successfully!';
+            setTimeout(() => confirmEl.textContent = '', 3000);
+        });
         
         function formatDate(d) { if (!d) return 'Present'; return new Date(d + 'T00:00:00').toLocaleDateString('en-US', { year: 'numeric', month: 'short' }); }
         
@@ -880,25 +1100,34 @@ document.getElementById('save-settings-btn').addEventListener('click', () => {
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF('p', 'mm', 'a4');
             const p = profileData;
+            const isDark = document.documentElement.classList.contains('dark');
             
             const SW = 65, M = 15, CSX = SW + M, CW = 210 - SW - M * 2;
-            const FC = '#e5e7eb', LFC = '#9ca3af', SBC = '#1f2937', PC = '#a78bfa', BGC = '#111827';
             
+            // Colors are now theme-dependent
+            const FC = isDark ? '#f3f4f6' : '#1f2937'; // Main Text (Full Color)
+            const LFC = isDark ? '#9ca3af' : '#6b7280'; // Subtle Text (Less Full Color)
+            const SBC = isDark ? '#1f2937' : '#ffffff'; // Sidebar Background
+            const PC = '#8b5cf6'; // Primary Color (Purple)
+            const BGC = isDark ? '#111827' : '#f9fafb'; // Main Background
+            const SBLC = isDark ? '#374151' : '#e5e7eb'; // Sidebar Border Line Color
+
             let y = 0;
             const cpb = h => { 
                 if (y + h > 280) { 
                     doc.addPage(); 
-                    // Re-apply background colors to the new page
                     doc.setFillColor(BGC); 
                     doc.rect(0, 0, 210, 297, 'F');
                     doc.setFillColor(SBC); 
                     doc.rect(0, 0, SW, 297, 'F');
+                    doc.setDrawColor(SBLC).line(SW, 0, SW, 297);
                     y = M; 
                 } 
             };
 
             doc.setFillColor(BGC); doc.rect(0, 0, 210, 297, 'F');
             doc.setFillColor(SBC); doc.rect(0, 0, SW, 297, 'F');
+            doc.setDrawColor(SBLC).line(SW, 0, SW, 297);
 
             y = M + 10;
             doc.setFont('helvetica', 'bold').setFontSize(12).setTextColor(FC);
@@ -906,7 +1135,10 @@ document.getElementById('save-settings-btn').addEventListener('click', () => {
             doc.setFont('helvetica', 'normal').setFontSize(9).setTextColor(LFC);
             if (p.email) { doc.text(p.email, M, y); y += 6; }
             if (p.phone) { doc.text(p.phone, M, y); y += 6; }
-            if (p.linkedin) { doc.textWithLink('LinkedIn', M, y, { url: p.linkedin }); }
+            if (p.linkedin) { 
+                doc.setTextColor(PC).textWithLink('LinkedIn', M, y, { url: p.linkedin }); 
+                y += 6;
+            }
             y += 15;
 
             if (p.certifications && p.certifications.length > 0 && p.certifications[0].name) {
@@ -946,8 +1178,9 @@ document.getElementById('save-settings-btn').addEventListener('click', () => {
             });
 
             y = M + 10;
+            const fullName = p.fullName || `${p.firstName} ${p.lastName}`;
             doc.setFont('helvetica', 'bold').setFontSize(28).setTextColor(FC);
-            doc.text(p.fullName.toUpperCase(), CSX, y); y += 10;
+            doc.text(fullName.toUpperCase(), CSX, y); y += 10;
             doc.setFont('helvetica', 'normal').setFontSize(14).setTextColor(PC);
             doc.text(p.jobTitle, CSX, y); y += 15;
 
@@ -990,12 +1223,38 @@ document.getElementById('save-settings-btn').addEventListener('click', () => {
                  y += 5;
             });
 
-            doc.save(`${p.fullName.replace(/ /g, '_')}_Resume.pdf`);
+            doc.save(`${fullName.replace(/ /g, '_')}_Resume.pdf`);
         }
 
 
         function generatePPT(profileData) {
-            let pptx = new PptxGenJS(); const p = profileData; pptx.layout = 'LAYOUT_WIDE'; pptx.defineSlideMaster({ title: 'MASTER_SLIDE', background: { color: '111827' }, objects: [{ 'text': { text: 'SLH Profiler', options: { x:0.5, y:5.2, fontSize:10, color:'6B7280' } } }] }); let s = pptx.addSlide({ masterName: 'MASTER_SLIDE' }); s.addText(p.fullName, { x: 0.5, y: 1.5, fontSize: 48, w: '90%', align: 'center', color: 'F9FAFB', bold: true }); s.addText(p.jobTitle, { x: 0.5, y: 2.5, fontSize: 24, w: '90%', align: 'center', color: 'A78BFA' }); s.addText(`${p.email}\n${p.phone}`, { x: 0.5, y: 4.5, fontSize: 14, w: '90%', align: 'center', color: 'D1D5DB' }); s = pptx.addSlide({ masterName: 'MASTER_SLIDE' }); s.addText("Professional Summary", { x: 0.5, y: 0.5, fontSize: 28, bold: true, color: 'A78BFA' }); s.addText(p.summary, { x: 0.5, y: 1.5, w: '90%', h: '75%', fontSize: 16, color: 'E5E7EB' }); p.experiences.forEach(e => { if(!e.title) return; s = pptx.addSlide({ masterName: 'MASTER_SLIDE' }); s.addText("Work Experience", { x: 0.5, y: 0.5, fontSize: 28, bold: true, color: 'A78BFA' }); s.addText(`${e.title} at ${e.company}`, { x: 0.5, y: 1.5, fontSize: 22, bold: true, color: 'F9FAFB' }); s.addText(`${formatDate(e.start)} - ${formatDate(e.end)}`, { x: 0.5, y: 2.0, fontSize: 16, color: '9CA3AF' }); let to = [{ text: e.desc, options: { fontSize: 14, bullet: true, color: 'E5E7EB' } }]; if (e.technologies && e.technologies.length > 0) { to.push({ text: `Technologies: ${e.technologies.join(', ')}`, options: { fontSize: 12, color: 'D1D5DB', indentLevel: 1 } }); } s.addText(to, { x: 0.5, y: 2.7, w: '90%', h: '60%'}); }); s = pptx.addSlide({ masterName: 'MASTER_SLIDE' }); s.addText("Core Skills", { x: 0.5, y: 0.5, fontSize: 28, bold: true, color: 'A78BFA' }); s.addText(p.skills.join('\n'), { x: 0.5, y: 1.5, w: '90%', fontSize: 16, bullet: {type: 'number'}, color: 'E5E7EB' }); pptx.writeFile({ fileName: `${p.fullName.replace(' ','_')}_Profile.pptx` });
+            let pptx = new PptxGenJS(); const p = profileData; pptx.layout = 'LAYOUT_WIDE';
+            const isDark = document.documentElement.classList.contains('dark');
+            
+            const BGC = isDark ? '111827' : 'F9FAFB';
+            const FC = isDark ? 'F9FAFB' : '1F2937';
+            const LFC = isDark ? 'D1D5DB' : '6B7280';
+            const PC = 'A78BFA';
+            const SBC = isDark ? '1F2937' : 'FFFFFF';
+
+            pptx.defineSlideMaster({ title: 'MASTER_SLIDE', background: { color: BGC }, objects: [{ 'text': { text: 'SLH Profiler', options: { x:0.5, y:5.2, fontSize:10, color:LFC } } }] }); 
+            let s = pptx.addSlide({ masterName: 'MASTER_SLIDE' }); 
+            const fullName = p.fullName || `${p.firstName} ${p.lastName}`;
+            s.addText(fullName, { x: 0.5, y: 1.5, fontSize: 48, w: '90%', align: 'center', color: FC, bold: true }); 
+            s.addText(p.jobTitle, { x: 0.5, y: 2.5, fontSize: 24, w: '90%', align: 'center', color: PC }); 
+            s.addText(`${p.email}\n${p.phone}`, { x: 0.5, y: 4.5, fontSize: 14, w: '90%', align: 'center', color: LFC }); 
+            s = pptx.addSlide({ masterName: 'MASTER_SLIDE' }); s.addText("Professional Summary", { x: 0.5, y: 0.5, fontSize: 28, bold: true, color: PC }); 
+            s.addText(p.summary, { x: 0.5, y: 1.5, w: '90%', h: '75%', fontSize: 16, color: LFC }); 
+            p.experiences.forEach(e => { if(!e.title) return; s = pptx.addSlide({ masterName: 'MASTER_SLIDE' }); 
+            s.addText("Work Experience", { x: 0.5, y: 0.5, fontSize: 28, bold: true, color: PC }); 
+            s.addText(`${e.title} at ${e.company}`, { x: 0.5, y: 1.5, fontSize: 22, bold: true, color: FC }); 
+            s.addText(`${formatDate(e.start)} - ${formatDate(e.end)}`, { x: 0.5, y: 2.0, fontSize: 16, color: LFC }); 
+            let to = [{ text: e.desc, options: { fontSize: 14, bullet: true, color: LFC } }]; 
+            if (e.technologies && e.technologies.length > 0) { to.push({ text: `Technologies: ${e.technologies.join(', ')}`, options: { fontSize: 12, color: LFC, indentLevel: 1 } }); } 
+            s.addText(to, { x: 0.5, y: 2.7, w: '90%', h: '60%'}); }); 
+            s = pptx.addSlide({ masterName: 'MASTER_SLIDE' }); s.addText("Core Skills", { x: 0.5, y: 0.5, fontSize: 28, bold: true, color: PC }); 
+            s.addText(p.skills.join('\n'), { x: 0.5, y: 1.5, w: '90%', fontSize: 16, bullet: {type: 'number'}, color: LFC }); 
+            pptx.writeFile({ fileName: `${fullName.replace(' ','_')}_Profile.pptx` });
         }
         
         window.exportToPDF = function(profileId) {
@@ -1008,16 +1267,57 @@ document.getElementById('save-settings-btn').addEventListener('click', () => {
             if(profile) generatePPT(profile);
         }
 
+        function openChatForRecruiter() {
+            const chatInput = document.getElementById('chat-input-modal');
+            chatInput.value = 'Find candidates for...';
+            aiCoachButton.click();
+            chatInput.focus();
+            chatInput.select();
+        }
+
         // --- AI CHATBOT ---
         const aiCoachButton = document.getElementById('ai-coach-button');
         const aiChatModal = document.getElementById('ai-chat-modal');
         const closeChatModalBtn = document.getElementById('close-chat-modal');
+        const toggleChatSizeBtn = document.getElementById('toggle-chat-size-btn');
         const chatWindow = document.getElementById('chat-window-modal');
         const chatInput = document.getElementById('chat-input-modal');
         const sendChatBtn = document.getElementById('send-chat-btn-modal');
-        const apiKey = "";
-        aiCoachButton.addEventListener('click', () => { aiChatModal.classList.remove('hidden'); aiChatModal.classList.add('flex'); aiCoachButton.classList.add('hidden'); });
-        closeChatModalBtn.addEventListener('click', () => { aiChatModal.classList.add('hidden'); aiChatModal.classList.remove('flex'); aiCoachButton.classList.remove('hidden'); });
+        
+        aiCoachButton.addEventListener('click', () => { 
+            aiChatModal.classList.remove('hidden'); 
+            aiChatModal.classList.add('flex'); 
+            aiCoachButton.classList.add('hidden'); 
+        });
+
+        closeChatModalBtn.addEventListener('click', () => { 
+            const icon = closeChatModalBtn.querySelector('svg');
+            if (icon) {
+                const newIcon = document.createElement('i');
+                newIcon.setAttribute('data-feather', 'minus');
+                newIcon.className = 'w-5 h-5';
+                icon.replaceWith(newIcon);
+                feather.replace();
+            }
+            aiChatModal.classList.add('hidden'); 
+            aiChatModal.classList.remove('flex'); 
+            aiCoachButton.classList.remove('hidden'); 
+        });
+        
+        toggleChatSizeBtn.addEventListener('click', () => {
+            aiChatModal.classList.toggle('is-maximized');
+            const isMaximized = aiChatModal.classList.contains('is-maximized');
+            const currentIcon = toggleChatSizeBtn.querySelector('svg') || toggleChatSizeBtn.querySelector('i');
+            const newIconName = isMaximized ? 'minimize-2' : 'maximize-2';
+            
+            if (currentIcon) {
+                const newIcon = document.createElement('i');
+                newIcon.setAttribute('data-feather', newIconName);
+                newIcon.className = 'w-5 h-5';
+                currentIcon.replaceWith(newIcon);
+                feather.replace();
+            }
+        });
         
         function addMessageToChat(content, sender) {
             const messageWrapper = document.createElement('div');
@@ -1044,7 +1344,10 @@ document.getElementById('save-settings-btn').addEventListener('click', () => {
             addMessageToChat(msg, 'user'); 
             chatInput.value = ''; 
             addMessageToChat('', 'loader'); 
+            
+            // Get the *current* editor data, not from saved profiles
             const p = getUserProfileData(); 
+            
             const sp = `You are ProGenius AI, a helpful recruitment assistant. You have two main functions:
 1.  **Job Seeker:** If the user asks for jobs, analyze "currentProfile" data to give personalized career advice (3 job titles, 3 interview tips).
 2.  **Recruiter:** If the user asks to find candidates for a specific role (e.g., "find candidates for a project manager"), analyze the "candidateDatabase". **Adopt a clear, decisive managerial tone.** Identify the top 3 candidates and provide a clear, conversational rationale, prioritizing the best fit. When listing candidates, **display only their full name and job title, and do not include their ID.**
@@ -1054,42 +1357,84 @@ document.getElementById('save-settings-btn').addEventListener('click', () => {
 * Start with a clear analysis (e.g., "<p>If you're looking for someone with a <strong>[Role]</strong> title, you should consider...</p><br>").
 * The rationale for each candidate must be clearly separated and easy to read using <br> or <p> tags.
 * **IMPORTANT:** Your response must be ONLY the raw HTML content. Do not wrap it in Markdown blocks like \`\`\`html or \`\`\`.`;
-            const uq = `${msg}\n\n---CONTEXT---\n\nCurrent Profile:\n${JSON.stringify(p, null, 2)}\n\nCandidate Database:\n${JSON.stringify(savedProfiles, null, 2)}`; 
-try {
-    // This is the NEW, SAFE way to call your function
-    // It calls your own code at '/.netlify/functions/get-ai-response'
-    // INSTEAD of calling googleapis.com directly.
-    const res = await fetch('/.netlify/functions/get-ai-response', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-            userQuery: uq,
-            systemPrompt: sp
-        })
-    });
+            
+            const uq = `${msg}\n\n---CONTEXT---\n\nCurrent Profile (the one being edited):\n${JSON.stringify(p, null, 2)}\n\nCandidate Database (all saved profiles):\n${JSON.stringify(savedProfiles, null, 2)}`; 
+            
+            try {
+                const res = await fetch('/.netlify/functions/get-ai-response', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        userQuery: uq,
+                        systemPrompt: sp
+                    })
+                });
 
-    if (!res.ok) {
-        throw new Error(`Function call failed: ${res.status}`);
-    }
+                if (!res.ok) {
+                    throw new Error(`Function call failed: ${res.status}`);
+                }
 
-    const result = await res.json();
-    const cand = result.candidates?.[0];
+                const result = await res.json();
+                const cand = result.candidates?.[0];
 
-    document.getElementById('loader-message')?.remove();
+                document.getElementById('loader-message')?.remove();
 
-    if (cand?.content?.parts?.[0]?.text) {
-        addMessageToChat(cand.content.parts[0].text, 'ai');
-    } else {
-        throw new Error("Unexpected API response structure.");
-    }
-} catch (err) {
-    console.error("API Error:", err);
-    document.getElementById('loader-message')?.remove();
-    addMessageToChat(`<p class="text-red-500">Sorry, an error occurred.</p>`, 'ai');
-}
-}
+                if (cand?.content?.parts?.[0]?.text) {
+                    addMessageToChat(cand.content.parts[0].text, 'ai');
+                } else {
+                    throw new Error("Unexpected API response structure.");
+                }
+            } catch (err) {
+                console.error("API Error:", err);
+                document.getElementById('loader-message')?.remove();
+                addMessageToChat(`<p class="text-danger-text">Sorry, an error occurred.</p>`, 'ai');
+            }
+        }
         sendChatBtn.addEventListener('click', handleChat);
         chatInput.addEventListener('keypress', e => { if(e.key === 'Enter') handleChat() });
+
+        // --- THEME SWITCHER LOGIC ---
+        const themeSelect = document.getElementById('theme-select');
+        const systemThemeQuery = window.matchMedia('(prefers-color-scheme: dark)');
+
+        function applyTheme(theme) {
+            if (theme === 'dark') {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+        }
+
+        function handleSystemThemeChange(e) {
+            if (themeSelect.value === 'system') {
+                applyTheme(e.matches ? 'dark' : 'light');
+            }
+        }
+
+        function loadTheme() {
+            const savedTheme = localStorage.getItem('theme') || 'system';
+            themeSelect.value = savedTheme;
+            
+            if (savedTheme === 'system') {
+                applyTheme(systemThemeQuery.matches ? 'dark' : 'light');
+            } else {
+                applyTheme(savedTheme);
+            }
+            // Listen for system changes
+            systemThemeQuery.addEventListener('change', handleSystemThemeChange);
+        }
+
+        themeSelect.addEventListener('change', (e) => {
+            const newTheme = e.target.value;
+            localStorage.setItem('theme', newTheme);
+            
+            if (newTheme === 'system') {
+                applyTheme(systemThemeQuery.matches ? 'dark' : 'light');
+            } else {
+                applyTheme(newTheme);
+            }
+        });
     </script>
 </body>
 </html>
+
