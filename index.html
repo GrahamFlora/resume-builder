@@ -148,14 +148,16 @@
         /* Chat Modal Sizing */
         #ai-chat-modal {
             transition: all 0.3s ease-in-out;
+            border-radius: 0.5rem; /* 8px rounded-lg */
         }
+        /* --- FIX 3: Chat Maximize now leaves a margin --- */
         #ai-chat-modal.is-maximized {
-            width: 90vw;
-            height: 90vh;
-            max-width: 1200px;
-            max-height: 90%;
-            bottom: 2rem;
-            right: 2rem;
+            inset: 2rem; /* This sets top, right, bottom, and left to 2rem */
+            width: auto;  /* Let inset control the size */
+            height: auto; /* Let inset control the size */
+            max-width: 100%;
+            max-height: 100%;
+            border-radius: 0.5rem; /* Add the radius back */
         }
 
         /* New Quick Action Button Styles */
@@ -679,8 +681,8 @@ let skills = [], experienceCount = 0, certificationCount = 0;
              }
         });
 
-        // --- **FIX 1**: Replaced complex SVG with a simpler placeholder ---
-        const RESUME_PREVIEW_SVG = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjI4MyIgdmlld0JveD0iMCAwIDIwMCAyODMiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjIwMCIgaGVpZ2h0PSIyODMiIHJ4PSI4IiBmaWxsPSJ2YXIoLS1jYXJkLWJnKSIvPjxyZWN0IHg9IjE1IiB5PSIxNSIgd2lkdGg9IjE3MCIgaGVpZ2h0PSI0IiByeD0iMiIgZmlsbD0idmFyKC0tcHJpbWFyeS1wdXJwbGUpIiBvcGFjaXR5PSIwLjciLz48cmVjdCB4PSIxNSIgeT0iMzIiIHdpZHRoPSI1NSIgaGVpZ2h0PSIxMSIgcng9IjIiIGZpbGw9InZhcigtLXByaW1hcnktcHVycGxlKSIvPjxyZWN0IHg9IjE1IiB5PSI1MiIgd2lkdGg9IjQ1IiBoZWlnaHQ9IjgiIHJ4PSIyIiBmaWxsPSJ2YXIoLS1ib3JkZXIpIi8+PHJlY3QgeD0iMTUiIHk9IjY3IiB3aWR0aD0iNDUiIGhlaWdodD0iOCIgcng9IjIiIGZpbGw9InZhcigtLWJvcmRlcikiLz48cmVjdCB4PSIxNSIgeT0iODUiIHdpZHRoPSI1NSIgaGVpZ2h0PSIxMSIgcng9IjIiIGZpbGw9InZhcigtLXByaW1hcnktcHVycGxlKSIvPjxyZWN0IHg9IjE1IiB5PSIxMDgiIHdpZHRoPSI0NSIgaGVpZ2h0PSI4IiByeD0iMiIgZmlsbD0idmFyKC0tYm9yZGVyKSIvPjxyZWN0IHg9Ijc1IiB5PSIzMiIgd2lkdGg9IjExMCIgaGVpZ2h0PSI4IiByeD0iMiIgZmlsbD0idmFyKC0tYm9yZGVyKSIvPjxyZWN0IHg9Ijc1IiB5PSI0NCIgd2lkdGg9Ijg1IiBoZWlnaHQ9IjgiIHJ4PSIyIiBmaWxsPSJ2YXIoLS1pbnB1dC1iZykiLz48cmVjdCB4PSI3NSIgeT0iNjAiIHdpZHRoPSI5NSIgaGVpZ2h0PSI1IiByeD0iMiIgZmlsbD0idmFyKC0tYm9yZGVyKSIvPjxyZWN0IHg9Ijc1IiB5PSI2OCIgd2lkdGg9IjEwNSIgaGVpZ2h0PSI1IiByeD0iMiIgZmlsbD0idmFyKC0tYm9yZGVyKSIvPjxyZWN0IHg9Ijc1IiB5PSI4MCIgd2lkdGg9IjExMCIgaGVpZ2h0PSI4IiByeD0iMiIgZmlsbD0idmFyKC0tYm9yZGVyKSIvPjxyZWN0IHg9Ijc1IiB5PSI5MiIgd2lkdGg9Ijk1IiBoZWlnaHQ9IjgiIHJ4PSIyIiBmaWxsPSJ2YXIoLS1pbnB1dC1iZykiLz48cmVjdCB4PSI3NSIgeT0iMTA4IiB3aWR0aD0iMTAzIiBoZWlnaHQ9IjUiIHJ4PSIyIiBmaWxsPSJ2YXIoLS1ib3JkZXIpIi8+PHJlY3QgeD0iNzUiIHk9IjExNiIgd2lkdGg9IjYwIiBoZWlnaHQ9IjUiIHJ4PSIyIiBmaWxsPSJ2YXIoLS1ib3JkZXIpIi8+PHJlY3QgeD0iMjAiIHk9IjE3MCIgd2lkdGg9IjE2MCIgaGVpZ2h0PSI1IiByeD0iMiIgZmlsbD0idmFyKC0tYmFja2dyb3VuZCkiLz48cmVjdCB4PSIxNSIgeT0iMjY0IiB3aWR0aD0iMTcwIiBoZWlnaHQ9IjQiIHJ4PSIyIiBmaWxsPSJ2YXIoLS1wcmltYXJ5LXB1cnBsZSkiIG9wYWNpdHk9IjAuNyIvPjwvc3ZnPg==";
+        // --- FIX 1: Resume preview SVG now uses static colors instead of CSS variables ---
+        const RESUME_PREVIEW_SVG = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjI4MyIgdmlld0JveD0iMCAwIDIwMCAyODMiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjIwMCIgaGVpZ2h0PSIyODMiIHJ4PSI4IiBmaWxsPSIjMWYyOTM3Ii8+PHJlY3QgeD0iMTUiIHk9IjE1IiB3aWR0aD0iMTcwIiBoZWlnaHQ9IjQiIHJ4PSIyIiBmaWxsPSIjOGI1Y2Y2IiBvcGFjaXR5PSIwLjciLz48cmVjdCB4PSIxNSIgeT0iMzIiIHdpZHRoPSI1NSIgaGVpZ2h0PSIxMSIgcng9IjIiIGZpbGw9IiM4YjVjZjYiLz48cmVjdCB4PSIxNSIgeT0iNTIiIHdpZHRoPSI0NSIgaGVpZ2h0PSI4IiByeD0iMiIgZmlsbD0iIzM3NDE1MSIvPjxyZWN0IHg9IjE1IiB5PSI2NyIgd2lkdGg9IjQ1IiBoZWlnaHQ9IjgiIHJ4PSIyIiBmaWxsPSIjMzc0MTUxIi8+PHJlY3QgeD0iMTUiIHk9Ijg1IiB3aWR0aD0iNTUiIGhlaWdodD0iMTEiIHJ4PSIyIiBmaWxsPSIjOGI1Y2Y2Ii8+PHJlY3QgeD0iMTUiIHk9IjEwOCIgd2lkdGg9IjQ1IiBoZWlnaHQ9IjgiIHJ4PSIyIiBmaWxsPSIjMzc0MTUxIi8+PHJlY3QgeD0iNzUiIHk9IjMyIiB3aWR0aD0iMTEwIiBoZWlnaHQ9IjgiIHJ4PSIyIiBmaWxsPSIjMzc0MTUxIi8+PHJlY3QgeD0iNzUiIHk9IjQ0IiB3aWR0aD0iODUiIGhlaWdodD0iOCIgcng9IjIiIGZpbGw9IiMxZjI5MzciLz48cmVjdCB4PSI3NSIgeT0iNjAiIHdpZHRoPSI5NSIgaGVpZ2h0PSI1IiByeD0iMiIgZmlsbD0iIzM3NDE1MSIvPjxyZWN0IHg9Ijc1IiB5PSI2OCIgd2lkdGg9IjEwNSIgaGVpZ2h0PSI1IiByeD0iMiIgZmlsbD0iIzM3NDE1MSIvPjxyZWN0IHg9Ijc1IiB5PSI4MCIgd2lkdGg9IjExMCIgaGVpZ2h0PSI4IiByeD0iMiIgZmlsbD0iIzM3NDE1MSIvPjxyZWN0IHg9Ijc1IiB5PSI5MiIgd2lkdGg9Ijk1IiBoZWlnaHQ9IjgiIHJ4PSIyIiBmaWxsPSIjMWYyOTM3Ii8+PHJlY3QgeD0iNzUiIHk9IjEwOCIgd2lkdGg9IjEwMyIgaGVpZ2h0PSI1IiByeD0iMiIgZmlsbD0iIzM3NDE1MSIvPjxyZWN0IHg9Ijc1IiB5PSIxMTYiIHdpZHRoPSI2MCIgaGVpZ2h0PSI1IiByeD0iMiIgZmlsbD0iIzM3NDE1MSIvPjxyZWN0IHg9IjIwIiB5PSIxNzAiIHdpZHRoPSIxNjAiIGhlaWdodD0iNSIgcng9IjIiIGZpbGw9IiMxMTgyNyIvPjxyZWN0IHg9IjE1IiB5PSIyNjQiIHdpZHRoPSIxNzAiIGhlaWdodD0iNCIgcng9IjIiIGZpbGw9IiM4YjVjZjYiIG9wYWNpdHk9IjAuNyIvPjwvc3ZnPg==";
 
         function renderDocumentsView() {
             const grid = document.getElementById('document-cards-grid');
@@ -901,7 +903,6 @@ let skills = [], experienceCount = 0, certificationCount = 0;
             if (progressText) {
                 progressText.textContent = `${percentage}%`;
             }
-            // --- **FIX 2**: Removed the stray "D" typo ---
             if (subtextEl) {
                 subtextEl.textContent = subtext;
             }
@@ -1077,8 +1078,11 @@ let skills = [], experienceCount = 0, certificationCount = 0;
             showView('editor');
         }
 
+        // --- FIX 2: Save button now saves AND redirects to documents view ---
         document.getElementById('save-btn').addEventListener('click', () => {
-            saveProfile(); // Just save, don't switch view
+            if (saveProfile()) {
+                showView('documents');
+            }
         });
         
         document.getElementById('save-settings-btn').addEventListener('click', () => {
@@ -1437,4 +1441,3 @@ let skills = [], experienceCount = 0, certificationCount = 0;
     </script>
 </body>
 </html>
-
