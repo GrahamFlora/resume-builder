@@ -160,6 +160,25 @@
             border-radius: 0.5rem; /* Add the radius back */
         }
 
+        /* --- NEW STYLES for menu buttons --- */
+        .btn-menu-rename {
+            transition: all 0.2s ease-in-out;
+        }
+        .btn-menu-rename:hover {
+            background-color: var(--accent-sidebar-active);
+            color: var(--accent-sidebar-text);
+            font-weight: 600;
+        }
+        .btn-menu-delete {
+            color: var(--danger-text);
+            transition: all 0.2s ease-in-out;
+        }
+        .btn-menu-delete:hover {
+            background-color: var(--danger-hover);
+            font-weight: 600;
+        }
+        /* --- END OF NEW STYLES --- */
+
         /* New Quick Action Button Styles */
         .quick-action-btn {
             background-color: var(--card-bg);
@@ -718,10 +737,10 @@ let skills = [], experienceCount = 0, certificationCount = 0;
                                     <i data-feather="more-vertical" class="w-5 h-5 pointer-events-none"></i>
                                 </button>
                                 <div id="${profile.id}-menu" class="absolute right-0 mt-2 w-40 card p-1 rounded-md shadow-lg document-dropdown-menu hidden z-20">
-                                    <button onclick="promptRename('${profile.id}', '${profile.fullName || `${profile.firstName} ${profile.lastName}`}')" class="w-full text-left flex items-center p-2 text-sm rounded-md hover:bg-gray-100 dark:hover:bg-gray-700">
+                                    <button onclick="promptRename('${profile.id}', '${profile.fullName || `${profile.firstName} ${profile.lastName}`}')" class="w-full text-left flex items-center p-2 text-sm rounded-md btn-menu-rename">
                                         <i data-feather="edit-2" class="w-4 h-4 mr-2"></i>Rename
                                     </button>
-                                    <button onclick="confirmDelete('${profile.id}', '${profile.fullName || `${profile.firstName} ${profile.lastName}`}')" class="w-full text-left flex items-center p-2 text-sm rounded-md text-danger-text hover:bg-danger-hover">
+                                    <button onclick="confirmDelete('${profile.id}', '${profile.fullName || `${profile.firstName} ${profile.lastName}`}')" class="w-full text-left flex items-center p-2 text-sm rounded-md btn-menu-delete">
                                         <i data-feather="trash-2" class="w-4 h-4 mr-2"></i>Delete
                                     </button>
                                 </div>
@@ -730,13 +749,13 @@ let skills = [], experienceCount = 0, certificationCount = 0;
                         <p class="text-xs text-subtle mb-4 flex-1">Updated ${profile.lastUpdate}</p>
                         <div class="document-actions space-y-2 mt-auto" onclick="event.stopPropagation();">
                              <button onclick="exportToPDF('${profile.id}')" class="w-full flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 text-sm font-medium text-red-500 dark:text-red-400">
-                                <svg class="w-5 h-5 mr-2" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8 3H16V7H20V17C20 18.1046 19.1046 19 18 19H6C4.89543 19 4 18.1046 4 17V5C4 3.89543 4.89543 3 6 3H8Z" fill="#FEE2E2"></path><path d="M16 3L20 7H16V3Z" fill="#F87171"></path><path fill-rule="evenodd" clip-rule="evenodd" d="M12.4142 11.5858C12.7497 11.2503 13.2503 11.2503 13.5858 11.5858L15.2929 13.2929C15.6834 13.6834 15.6834 14.3166 15.2929 14.7071C14.9024 15.0976 14.2692 15.0976 13.8787 14.7071L13 13.8284V16C13 16.5523 12.5523 17 12 17C11.4477 17 11 16.5523 11 16V13.8284L10.1213 14.7071C9.7308 15.0976 9.09763 15.0976 8.70711 14.7071C8.31658 14.3166 8.31658 13.6834 8.70711 13.2929L10.4142 11.5858C10.7497 11.2503 11.2503 11.2503 11.5858 11.5858H12.4142Z" fill="#DC2626"></path></svg>
-                                Download PDF
-                             </button>
+                                 <svg class="w-5 h-5 mr-2" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8 3H16V7H20V17C20 18.1046 19.1046 19 18 19H6C4.89543 19 4 18.1046 4 17V5C4 3.89543 4.89543 3 6 3H8Z" fill="#FEE2E2"></path><path d="M16 3L20 7H16V3Z" fill="#F87171"></path><path fill-rule="evenodd" clip-rule="evenodd" d="M12.4142 11.5858C12.7497 11.2503 13.2503 11.2503 13.5858 11.5858L15.2929 13.2929C15.6834 13.6834 15.6834 14.3166 15.2929 14.7071C14.9024 15.0976 14.2692 15.0976 13.8787 14.7071L13 13.8284V16C13 16.5523 12.5523 17 12 17C11.4477 17 11 16.5523 11 16V13.8284L10.1213 14.7071C9.7308 15.0976 9.09763 15.0976 8.70711 14.7071C8.31658 14.3166 8.31658 13.6834 8.70711 13.2929L10.4142 11.5858C10.7497 11.2503 11.2503 11.2503 11.5858 11.5858H12.4142Z" fill="#DC2626"></path></svg>
+                                 Download PDF
+                              </button>
                              <button onclick="exportToPPT('${profile.id}')" class="w-full flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 text-sm font-medium text-orange-500 dark:text-orange-400">
-                                <svg class="w-5 h-5 mr-2" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8 3H16V7H20V17C20 18.1046 19.1046 19 18 19H6C4.89543 19 4 18.1046 4 17V5C4 3.89543 4.89543 3 6 3H8Z" fill="#FFEDD5"></path><path d="M16 3L20 7H16V3Z" fill="#FB923C"></path><path d="M12 11C10.8954 11 10 11.8954 10 13V16C10 17.1046 10.8954 18 12 18C13.1046 18 14 17.1046 14 16V13C14 11.8954 13.1046 11 12 11Z" fill="#F97316"></path></svg>
-                                Export to PPT
-                            </button>
+                                 <svg class="w-5 h-5 mr-2" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8 3H16V7H20V17C20 18.1046 19.1046 19 18 19H6C4.89543 19 4 18.1046 4 17V5C4 3.89543 4.89543 3 6 3H8Z" fill="#FFEDD5"></path><path d="M16 3L20 7H16V3Z" fill="#FB923C"></path><path d="M12 11C10.8954 11 10 11.8954 10 13V16C10 17.1046 10.8954 18 12 18C13.1046 18 14 17.1046 14 16V13C14 11.8954 13.1046 11 12 11Z" fill="#F97316"></path></svg>
+                                 Export to PPT
+                             </button>
                         </div>
                     </div>`;
                 cardWrapper.appendChild(card);
