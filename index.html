@@ -160,25 +160,6 @@
             border-radius: 0.5rem; /* Add the radius back */
         }
 
-        /* --- NEW STYLES for menu buttons --- */
-        .btn-menu-rename {
-            transition: all 0.2s ease-in-out;
-        }
-        .btn-menu-rename:hover {
-            background-color: var(--accent-sidebar-active);
-            color: var(--accent-sidebar-text);
-            font-weight: 600;
-        }
-        .btn-menu-delete {
-            color: var(--danger-text);
-            transition: all 0.2s ease-in-out;
-        }
-        .btn-menu-delete:hover {
-            background-color: var(--danger-hover);
-            font-weight: 600;
-        }
-        /* --- END OF NEW STYLES --- */
-
         /* New Quick Action Button Styles */
         .quick-action-btn {
             background-color: var(--card-bg);
@@ -528,9 +509,14 @@
         </div>
     </div>
     
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pptxgenjs/3.12.0/pptxgen.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+<!-- 1. Feather Icons -->
+<script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+
+<!-- 2. jsPDF -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<!-- 3. PPTXGenJS - Official Bundle -->
+<script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
     <script>
 // --- GLOBAL STATE ---
 // Try to load data from the browser's memory (localStorage).
@@ -737,10 +723,10 @@ let skills = [], experienceCount = 0, certificationCount = 0;
                                     <i data-feather="more-vertical" class="w-5 h-5 pointer-events-none"></i>
                                 </button>
                                 <div id="${profile.id}-menu" class="absolute right-0 mt-2 w-40 card p-1 rounded-md shadow-lg document-dropdown-menu hidden z-20">
-                                    <button onclick="promptRename('${profile.id}', '${profile.fullName || `${profile.firstName} ${profile.lastName}`}')" class="w-full text-left flex items-center p-2 text-sm rounded-md btn-menu-rename">
+                                    <button onclick="promptRename('${profile.id}', '${profile.fullName || `${profile.firstName} ${profile.lastName}`}')" class="w-full text-left flex items-center p-2 text-sm rounded-md hover:bg-gray-100 dark:hover:bg-gray-700">
                                         <i data-feather="edit-2" class="w-4 h-4 mr-2"></i>Rename
                                     </button>
-                                    <button onclick="confirmDelete('${profile.id}', '${profile.fullName || `${profile.firstName} ${profile.lastName}`}')" class="w-full text-left flex items-center p-2 text-sm rounded-md btn-menu-delete">
+                                    <button onclick="confirmDelete('${profile.id}', '${profile.fullName || `${profile.firstName} ${profile.lastName}`}')" class="w-full text-left flex items-center p-2 text-sm rounded-md text-danger-text hover:bg-danger-hover">
                                         <i data-feather="trash-2" class="w-4 h-4 mr-2"></i>Delete
                                     </button>
                                 </div>
@@ -749,13 +735,13 @@ let skills = [], experienceCount = 0, certificationCount = 0;
                         <p class="text-xs text-subtle mb-4 flex-1">Updated ${profile.lastUpdate}</p>
                         <div class="document-actions space-y-2 mt-auto" onclick="event.stopPropagation();">
                              <button onclick="exportToPDF('${profile.id}')" class="w-full flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 text-sm font-medium text-red-500 dark:text-red-400">
-                                 <svg class="w-5 h-5 mr-2" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8 3H16V7H20V17C20 18.1046 19.1046 19 18 19H6C4.89543 19 4 18.1046 4 17V5C4 3.89543 4.89543 3 6 3H8Z" fill="#FEE2E2"></path><path d="M16 3L20 7H16V3Z" fill="#F87171"></path><path fill-rule="evenodd" clip-rule="evenodd" d="M12.4142 11.5858C12.7497 11.2503 13.2503 11.2503 13.5858 11.5858L15.2929 13.2929C15.6834 13.6834 15.6834 14.3166 15.2929 14.7071C14.9024 15.0976 14.2692 15.0976 13.8787 14.7071L13 13.8284V16C13 16.5523 12.5523 17 12 17C11.4477 17 11 16.5523 11 16V13.8284L10.1213 14.7071C9.7308 15.0976 9.09763 15.0976 8.70711 14.7071C8.31658 14.3166 8.31658 13.6834 8.70711 13.2929L10.4142 11.5858C10.7497 11.2503 11.2503 11.2503 11.5858 11.5858H12.4142Z" fill="#DC2626"></path></svg>
-                                 Download PDF
-                              </button>
-                             <button onclick="exportToPPT('${profile.id}')" class="w-full flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 text-sm font-medium text-orange-500 dark:text-orange-400">
-                                 <svg class="w-5 h-5 mr-2" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8 3H16V7H20V17C20 18.1046 19.1046 19 18 19H6C4.89543 19 4 18.1046 4 17V5C4 3.89543 4.89543 3 6 3H8Z" fill="#FFEDD5"></path><path d="M16 3L20 7H16V3Z" fill="#FB923C"></path><path d="M12 11C10.8954 11 10 11.8954 10 13V16C10 17.1046 10.8954 18 12 18C13.1046 18 14 17.1046 14 16V13C14 11.8954 13.1046 11 12 11Z" fill="#F97316"></path></svg>
-                                 Export to PPT
+                                <svg class="w-5 h-5 mr-2" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8 3H16V7H20V17C20 18.1046 19.1046 19 18 19H6C4.89543 19 4 18.1046 4 17V5C4 3.89543 4.89543 3 6 3H8Z" fill="#FEE2E2"></path><path d="M16 3L20 7H16V3Z" fill="#F87171"></path><path fill-rule="evenodd" clip-rule="evenodd" d="M12.4142 11.5858C12.7497 11.2503 13.2503 11.2503 13.5858 11.5858L15.2929 13.2929C15.6834 13.6834 15.6834 14.3166 15.2929 14.7071C14.9024 15.0976 14.2692 15.0976 13.8787 14.7071L13 13.8284V16C13 16.5523 12.5523 17 12 17C11.4477 17 11 16.5523 11 16V13.8284L10.1213 14.7071C9.7308 15.0976 9.09763 15.0976 8.70711 14.7071C8.31658 14.3166 8.31658 13.6834 8.70711 13.2929L10.4142 11.5858C10.7497 11.2503 11.2503 11.2503 11.5858 11.5858H12.4142Z" fill="#DC2626"></path></svg>
+                                Download PDF
                              </button>
+                             <button onclick="exportToPPT('${profile.id}')" class="w-full flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 text-sm font-medium text-orange-500 dark:text-orange-400">
+                                <svg class="w-5 h-5 mr-2" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8 3H16V7H20V17C20 18.1046 19.1046 19 18 19H6C4.89543 19 4 18.1046 4 17V5C4 3.89543 4.89543 3 6 3H8Z" fill="#FFEDD5"></path><path d="M16 3L20 7H16V3Z" fill="#FB923C"></path><path d="M12 11C10.8954 11 10 11.8954 10 13V16C10 17.1046 10.8954 18 12 18C13.1046 18 14 17.1046 14 16V13C14 11.8954 13.1046 11 12 11Z" fill="#F97316"></path></svg>
+                                Export to PPT
+                            </button>
                         </div>
                     </div>`;
                 cardWrapper.appendChild(card);
@@ -1250,35 +1236,109 @@ let skills = [], experienceCount = 0, certificationCount = 0;
         }
 
 
-        function generatePPT(profileData) {
-            let pptx = new PptxGenJS(); const p = profileData; pptx.layout = 'LAYOUT_WIDE';
-            const isDark = document.documentElement.classList.contains('dark');
-            
-            const BGC = isDark ? '111827' : 'F9FAFB';
-            const FC = isDark ? 'F9FAFB' : '1F2937';
-            const LFC = isDark ? 'D1D5DB' : '6B7280';
-            const PC = 'A78BFA';
-            const SBC = isDark ? '1F2937' : 'FFFFFF';
+// Helper (missing—used for dates in experiences)
+function formatDate(d) {
+    if (!d) return 'Present';
+    try {
+        return new Date(d + 'T00:00:00').toLocaleDateString('en-US', { year: 'numeric', month: 'short' });
+    } catch (e) {
+        return 'Present';
+    }
+}
 
-            pptx.defineSlideMaster({ title: 'MASTER_SLIDE', background: { color: BGC }, objects: [{ 'text': { text: 'SLH Profiler', options: { x:0.5, y:5.2, fontSize:10, color:LFC } } }] }); 
-            let s = pptx.addSlide({ masterName: 'MASTER_SLIDE' }); 
-            const fullName = p.fullName || `${p.firstName} ${p.lastName}`;
-            s.addText(fullName, { x: 0.5, y: 1.5, fontSize: 48, w: '90%', align: 'center', color: FC, bold: true }); 
-            s.addText(p.jobTitle, { x: 0.5, y: 2.5, fontSize: 24, w: '90%', align: 'center', color: PC }); 
-            s.addText(`${p.email}\n${p.phone}`, { x: 0.5, y: 4.5, fontSize: 14, w: '90%', align: 'center', color: LFC }); 
-            s = pptx.addSlide({ masterName: 'MASTER_SLIDE' }); s.addText("Professional Summary", { x: 0.5, y: 0.5, fontSize: 28, bold: true, color: PC }); 
-            s.addText(p.summary, { x: 0.5, y: 1.5, w: '90%', h: '75%', fontSize: 16, color: LFC }); 
-            p.experiences.forEach(e => { if(!e.title) return; s = pptx.addSlide({ masterName: 'MASTER_SLIDE' }); 
-            s.addText("Work Experience", { x: 0.5, y: 0.5, fontSize: 28, bold: true, color: PC }); 
-            s.addText(`${e.title} at ${e.company}`, { x: 0.5, y: 1.5, fontSize: 22, bold: true, color: FC }); 
-            s.addText(`${formatDate(e.start)} - ${formatDate(e.end)}`, { x: 0.5, y: 2.0, fontSize: 16, color: LFC }); 
-            let to = [{ text: e.desc, options: { fontSize: 14, bullet: true, color: LFC } }]; 
-            if (e.technologies && e.technologies.length > 0) { to.push({ text: `Technologies: ${e.technologies.join(', ')}`, options: { fontSize: 12, color: LFC, indentLevel: 1 } }); } 
-            s.addText(to, { x: 0.5, y: 2.7, w: '90%', h: '60%'}); }); 
-            s = pptx.addSlide({ masterName: 'MASTER_SLIDE' }); s.addText("Core Skills", { x: 0.5, y: 0.5, fontSize: 28, bold: true, color: PC }); 
-            s.addText(p.skills.join('\n'), { x: 0.5, y: 1.5, w: '90%', fontSize: 16, bullet: {type: 'number'}, color: LFC }); 
-            pptx.writeFile({ fileName: `${fullName.replace(' ','_')}_Profile.pptx` });
+function generatePPT(profileData) {
+    if (typeof PptxGenJS === 'undefined') {
+        alert('PPTX library failed to load. Please refresh.');
+        return;
+    }
+
+    let pptx = new PptxGenJS();
+    const p = profileData;
+    pptx.layout = 'LAYOUT_WIDE';
+
+    const isDark = document.documentElement.classList.contains('dark');
+    const BGC = isDark ? '111827' : 'F9FAFB';
+    const FC = isDark ? 'F9FAFB' : '1F2937';
+    const LFC = isDark ? 'D1D5DB' : '6B7280';
+    const PC = 'A78BFA';
+
+    const profileNameForFile = (p.fullName || `${p.firstName || ''} ${p.lastName || ''}`.trim() || 'Untitled_Profile')
+        .replace(/[^a-zA-Z0-9_-]/g, '_');
+
+    // MASTER SLIDE - Use defineSlideMaster (NOT defineSlide)
+    pptx.defineSlideMaster({
+        title: 'MASTER_SLIDE',
+        background: { fill: BGC },
+        objects: [
+            { rect: { x: 0, y: 0, w: '100%', h: 0.7, fill: PC } },
+            {
+                text: p.fullName || 'Untitled Profile',
+                options: { x: 0.5, y: 0.05, w: 6, h: 0.5, fontSize: 32, color: 'FFFFFF', align: 'left', bold: true }
+            },
+            {
+                text: p.jobTitle || 'Professional',
+                options: { x: 0.5, y: 0.5, w: 6, h: 0.2, fontSize: 14, color: 'FFFFFF', align: 'left' }
+            },
+            {
+                text: [
+                    { text: `Email: ${p.email || 'N/A'}`, options: { breakLine: true } },
+                    { text: `Phone: ${p.phone || 'N/A'}`, options: { breakLine: true } },
+                    { text: `LinkedIn: ${p.linkedin || 'N/A'}`, options: { breakLine: true, hyperlink: p.linkedin ? { url: p.linkedin } : undefined } }
+                ],
+                options: { x: 6.5, y: 0.1, w: 5, h: 0.5, fontSize: 10, color: 'FFFFFF', align: 'right' }
+            },
+            { text: 'SLH Profiler AI Report', options: { x: 0.5, y: 7.2, w: 5, h: 0.2, fontSize: 10, color: LFC } }
+        ],
+        slideNumber: { x: 6.5, y: 7.2, w: 5, h: 0.2, fontSize: 10, color: LFC, align: 'right' }
+    });
+
+    // Summary Slide
+    let s = pptx.addSlide({ masterName: 'MASTER_SLIDE' });
+    s.addText("Professional Summary", { x: 0.5, y: 0.9, fontSize: 28, bold: true, color: PC });
+    s.addText(p.summary || 'No summary provided.', { x: 0.5, y: 1.5, w: '90%', h: '60%', fontSize: 16, color: FC, autoFit: true });
+
+    // Work Experience
+    if (p.experiences && p.experiences.length > 0) {
+        p.experiences.forEach(e => {
+            if (!e.title) return;
+            s = pptx.addSlide({ masterName: 'MASTER_SLIDE' });
+            s.addText(e.title, { x: 0.5, y: 0.9, fontSize: 28, bold: true, color: FC });
+            s.addText(`${e.company || 'N/A'} | ${formatDate(e.start)} - ${formatDate(e.end)}`, { x: 0.5, y: 1.4, fontSize: 16, color: LFC });
+
+            let to = [
+                { text: 'Key Responsibilities & Achievements:', options: { fontSize: 14, bold: true, color: FC, breakLine: true } },
+                { text: e.desc || 'No description.', options: { fontSize: 12, color: LFC, breakLine: true } }
+            ];
+            if (e.technologies?.length) {
+                to.push({ text: `Technologies: ${e.technologies.join(', ')}`, options: { fontSize: 12, color: LFC, indentLevel: 1, breakLine: true } });
+            }
+            s.addText(to, { x: 0.5, y: 2.0, w: '90%', h: '60%' });
+        });
+    }
+
+    // Skills
+    s = pptx.addSlide({ masterName: 'MASTER_SLIDE' });
+    s.addText("Core Skills", { x: 0.5, y: 0.9, fontSize: 28, bold: true, color: PC });
+    const skills = (p.skills || []).map(s => ({ text: s, options: { bullet: true, breakLine: true } }));
+    s.addText(skills.length ? skills : 'No skills added.', { x: 0.5, y: 1.5, w: '90%', h: '60%', fontSize: 16, color: LFC });
+
+    // Certifications
+    if (p.certifications && p.certifications.length > 0) {
+        const valid = p.certifications.filter(c => c.name?.trim());
+        if (valid.length > 0) {
+            s = pptx.addSlide({ masterName: 'MASTER_SLIDE' });
+            s.addText("Certifications & Licenses", { x: 0.5, y: 0.9, fontSize: 28, bold: true, color: PC });
+            const certs = valid.map(c => ({
+                text: `${c.name}${c.org ? ` - ${c.org}` : ''}${c.date ? ` (Issued: ${c.date})` : ''}`,
+                options: { bullet: true, breakLine: true }
+            }));
+            s.addText(certs, { x: 0.5, y: 1.5, w: '90%', h: '60%', fontSize: 16, color: LFC });
         }
+    }
+
+    // Export
+    pptx.writeFile({ fileName: `${profileNameForFile}_Profile.pptx` });
+}
         
         window.exportToPDF = function(profileId) {
             const profile = savedProfiles.find(p => p.id === profileId);
@@ -1372,14 +1432,25 @@ let skills = [], experienceCount = 0, certificationCount = 0;
             const p = getUserProfileData(); 
             
             const sp = `You are ProGenius AI, a helpful recruitment assistant. You have two main functions:
-1.  **Job Seeker:** If the user asks for jobs, analyze "currentProfile" data to give personalized career advice (3 job titles, 3 interview tips).
-2.  **Recruiter:** If the user asks to find candidates for a specific role (e.g., "find candidates for a project manager"), analyze the "candidateDatabase". **Adopt a clear, decisive managerial tone.** Identify the top 3 candidates and provide a clear, conversational rationale, prioritizing the best fit. When listing candidates, **display only their full name and job title, and do not include their ID.**
-**Recruiter Response Formatting MUST be conversational and well-spaced using HTML tags:**
-* Do NOT use <hr> tags. Use <br> for line breaks instead.
-* Do NOT use checkmark emojis (&#x2705;). Use a simple numbering system (1., 2., 3.) for top candidates instead.
-* Start with a clear analysis (e.g., "<p>If you're looking for someone with a <strong>[Role]</strong> title, you should consider...</p><br>").
-* The rationale for each candidate must be clearly separated and easy to read using <br> or <p> tags.
-* **IMPORTANT:** Your response must be ONLY the raw HTML content. Do not wrap it in Markdown blocks like \`\`\`html or \`\`\`.`;
+1.  **Recruiter (Manager Persona):**
+    * **Find Candidates:** If asked to "find candidates for [role]", analyze the "candidateDatabase". Adopt a clear, decisive managerial tone. Identify the top 3 candidates, listing **only their full name and job title**. Provide a clear, conversational rationale for each. Do not include their ID.
+    * **Interview Questions:** If asked to "generate interview questions for [role]", provide 3 technical and 2 behavioral questions.
+    * **Skill Gap Analysis:** If asked to "find the best internal candidate for [role] and list skill gaps", analyze the "candidateDatabase" against the "currentProfile" (as the job spec) and identify one best internal fit, listing 2-3 missing skills.
+    * **Team Building:** If asked to "build a team for [project]", analyze the "candidateDatabase" and suggest a 2-3 person team, listing their names, roles, and why they fit.
+    * **Onboarding Plan:** If asked to "generate an onboarding plan for [role]", provide a simple 3-point plan for the first week.
+
+2.  **Job Seeker (Employee Persona):**
+    * **Career Advice:** If asked for "jobs" or "career advice", analyze "currentProfile" to give personalized career advice (3 job titles, 3 interview tips).
+    * **Career Pathing:** If asked for a "career path to [goal role]", analyze "currentProfile" and list 2-3 skills they need to develop.
+    * **Resume Critique:** If asked to "critique my resume", analyze "currentProfile" and provide 3 specific, actionable improvement tips.
+    * **Mock Interview:** If asked for a "mock interview for [role]", respond with one common behavioral or technical question for that role.
+    * **Networking:** If asked to "find mentors" or "network with experts in [skill]", search the "candidateDatabase" and list 2-3 people (name, job title) who match that skill.
+
+**Response Formatting (IMPORTANT):**
+* Your response MUST be ONLY raw HTML content. Do not wrap it in Markdown blocks (\`\`\`html or \`\`\`).
+* Use <p>, <ul>, <li>, and <strong> tags for clear, conversational formatting.
+* Do NOT use <hr> tags. Use <br> for line breaks.
+* For the "Find Candidates" task: Do NOT use checkmark emojis (&#x2705;). Use a simple numbering system (1., 2., 3.) for top candidates.`;
             
             const uq = `${msg}\n\n---CONTEXT---\n\nCurrent Profile (the one being edited):\n${JSON.stringify(p, null, 2)}\n\nCandidate Database (all saved profiles):\n${JSON.stringify(savedProfiles, null, 2)}`; 
             
