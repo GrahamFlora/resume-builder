@@ -1016,21 +1016,19 @@ let skills = [], experienceCount = 0, certificationCount = 0;
                     savedProfiles[index] = { ...savedProfiles[index], ...profileData, lastUpdate };
                 }
             } else {
+                // --- NEW NAMING LOGIC ---
+                const baseName = `${profileData.firstName} ${profileData.lastName}`;
+                if (profileData.jobTitle && profileData.jobTitle.trim() !== '') {
+                    profileData.fullName = `${baseName} - ${profileData.jobTitle}`;
+                } else {
+                    profileData.fullName = `${baseName}'s Resume`;
+                }
+                // --- END NEW NAMING LOGIC ---
+
                 const newProfile = { ...profileData, id: `profile_${Date.now()}`, lastUpdate };
                 savedProfiles.push(newProfile);
                 document.getElementById('editing-profile-id').value = newProfile.id;
             }
-
-            localStorage.setItem('savedProfiles', JSON.stringify(savedProfiles));
-            saveConfirmP.textContent = 'Profile saved!';
-            saveConfirmP.classList.remove('text-danger-text');
-            setTimeout(() => saveConfirmP.textContent = '', 3000);
-            
-            renderDocumentsView();
-            renderRecentDocuments();
-            updateDashboardProgress();
-            return true;
-        }
 
         window.loadProfileForEditing = function(profileId, fromView = 'documents') {
             const profile = savedProfiles.find(p => p.id === profileId);
