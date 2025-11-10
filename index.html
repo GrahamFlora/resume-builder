@@ -152,18 +152,21 @@
         }
         /* --- FIX 3: Chat Maximize now leaves a margin --- */
         #ai-chat-modal.is-maximized {
-		    top: 2rem;
-		    right: 2rem;
-		    bottom: 0; /* flush with the bottom */
-		    left: 2rem;
-            width: auto;  /* Let inset control the size */
-            height: auto; /* Let inset control the size */
-            max-width: 100%;
-            max-height: 100%;
-            border-radius: 0.5rem; /* Add the radius back */
-        }
+			position: fixed; /* 
+			top: 2rem;
+			right: 2rem;
+			bottom: 0; /* flush with the bottom */
+			left: 2rem;
 
-        /* New Quick Action Button Styles */
+			width: auto;  
+			height: auto; 
+			max-width: 100%;
+			max-height: 100%;
+			border-radius: 0.5rem 0.5rem 0 0; /* top rounded only, since bottom touches edge */
+			z-index: 9999; /* ensure it appears above other content */
+			}
+
+			/* New Quick Action Button Styles */
         .quick-action-btn {
             background-color: var(--card-bg);
             border: 1px solid var(--border);
