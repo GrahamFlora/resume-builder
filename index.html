@@ -152,8 +152,10 @@
         }
         /* --- FIX 3: Chat Maximize now leaves a margin --- */
         #ai-chat-modal.is-maximized {
-            inset: 2rem; /* This sets top, right, bottom, and left to 2rem */
-			bottom: 0;   /* override bottom to reach the very end */
+		    top: 2rem;
+		    right: 2rem;
+		    bottom: 0; /* flush with the bottom */
+		    left: 2rem;
             width: auto;  /* Let inset control the size */
             height: auto; /* Let inset control the size */
             max-width: 100%;
