@@ -936,6 +936,26 @@ let skills = [], experienceCount = 0, certificationCount = 0;
             feather.replace(); updateEditorProgress();
         }
         addExperienceBtn.addEventListener('click', () => addExperience());
+		
+	    // --- COMMA-SEPARATED TECH TAGS ---
+        function addTechTags(inputElement) {
+            const list = inputElement.closest('.p-4').querySelector('.exp-tech-list');
+            const techNames = inputElement.value.trim().split(',')
+                                 .map(name => name.trim())
+                                 .filter(name => name); // Remove any empty strings
+
+            if (techNames.length > 0) {
+                techNames.forEach(name => {
+                    const span = document.createElement('span');
+                    span.className = 'tech-tag bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-300 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full flex items-center';
+                    span.innerHTML = `${name}<button type="button" class="remove-tech-btn ml-2 text-subtle hover:text-gray-900 dark:hover:text-gray-100"><i data-feather="x" class="w-3 h-3 pointer-events-none"></i></button></span>`;
+                    list.appendChild(span);
+                });
+                feather.replace();
+                inputElement.value = '';
+            }
+        }
+		
         experienceList.addEventListener('click', e => { if (e.target.closest('.remove-tech-btn')) { e.target.closest('.tech-tag').remove(); } if (e.target.closest('.add-tech-btn')) { const div = e.target.closest('.p-4'), input = div.querySelector('.exp-tech-input'), list = div.querySelector('.exp-tech-list'), name = input.value.trim(); if (name) { const span = document.createElement('span'); span.className = 'tech-tag bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-300 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full flex items-center'; span.innerHTML = `${name}<button type="button" class="remove-tech-btn ml-2 text-subtle hover:text-gray-900 dark:hover:text-gray-100"><i data-feather="x" class="w-3 h-3 pointer-events-none"></i></button></span>`; list.appendChild(span); feather.replace(); input.value = ''; } } });
         experienceList.addEventListener('keypress', e => { if (e.key === 'Enter' && e.target.classList.contains('exp-tech-input')) { e.preventDefault(); e.target.closest('.p-4').querySelector('.add-tech-btn').click(); } });
         
@@ -1446,11 +1466,13 @@ function generatePPT(profileData) {
             const sp = `You are ProGenius AI, a helpful recruitment assistant. You have two main functions:
 1.  **Job Seeker:** If the user asks for jobs, analyze "currentProfile" data to give personalized career advice (3 job titles, 3 interview tips).
 2.  **Recruiter:** If the user asks to find candidates for a specific role (e.g., "find candidates for a project manager"), analyze the "candidateDatabase". **Adopt a clear, decisive managerial tone.** Identify the top 3 candidates and provide a clear, conversational rationale, prioritizing the best fit. When listing candidates, **display only their full name and job title, and do not include their ID.**
-**Recruiter Response Formatting MUST be conversational and well-spaced using HTML tags:**
+***CRITICAL: Recruiter and Job Seeker Response Formatting MUST be conversational and well-spaced using HTML tags:**
 * Do NOT use <hr> tags. Use <br> for line breaks instead.
 * Do NOT use checkmark emojis (&#x2705;). Use a simple numbering system (1., 2., 3.) for top candidates instead.
 * Start with a clear analysis (e.g., "<p>If you're looking for someone with a <strong>[Role]</strong> title, you should consider...</p><br>").
 * The rationale for each candidate must be clearly separated and easy to read using <br> or <p> tags.
+* Use <strong> for bold headers (e.g., "<strong>Most Suitable Job Positions:</strong>").
+* Use <ul> and <li> for bulleted lists.
 * **IMPORTANT:** Your response must be ONLY the raw HTML content. Do not wrap it in Markdown blocks like \`\`\`html or \`\`\`.`;
             
             const uq = `${msg}\n\n---CONTEXT---\n\nCurrent Profile (the one being edited):\n${JSON.stringify(p, null, 2)}\n\nCandidate Database (all saved profiles):\n${JSON.stringify(savedProfiles, null, 2)}`; 
