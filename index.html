@@ -930,14 +930,14 @@ let skills = [], experienceCount = 0, certificationCount = 0;
                     <div class="w-1/2"><label for="exp-end-${experienceCount}" class="block text-sm font-medium text-subtle mb-1">End Date</label><input type="date" id="exp-end-${experienceCount}" title="End Date" class="w-full p-2 rounded-md input-field exp-end progress-input" value="${data.end || ''}"></div>
                 </div>
                 <div><label for="exp-desc-${experienceCount}" class="block text-sm font-medium text-subtle mb-1">Key Responsibilities & Achievements</label><textarea id="exp-desc-${experienceCount}" placeholder="Describe your role..." class="w-full p-2 rounded-md input-field exp-desc progress-input" rows="3">${data.desc || ''}</textarea></div>
-                <div><label class="block text-sm font-medium text-subtle mb-1">Technologies Used</label><div class="flex"><input type="text" placeholder="Add tech and press Enter" class="flex-grow p-2 rounded-l-md input-field exp-tech-input"><button type="button" class="p-2 rounded-r-md btn-secondary add-tech-btn"><i data-feather="plus" class="pointer-events-none"></i></button></div><div class="flex flex-wrap gap-2 mt-2 exp-tech-list">${(data.technologies || []).map(tech => `<span class="tech-tag bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-300 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full flex items-center">${tech}<button type="button" class="remove-tech-btn ml-2 text-subtle hover:text-gray-900 dark:hover:text-gray-100"><i data-feather="x" class="w-3 h-3 pointer-events-none"></i></button></span>`).join('')}</div></div>`;
+                <div><label class="block text-sm font-medium text-subtle mb-1">Technologies Used</label><div class="flex"><input type="text" placeholder="Add tech (e.g. React, Node, Git) and press Enter" class="flex-grow p-2 rounded-l-md input-field exp-tech-input"><button type="button" class="p-2 rounded-r-md btn-secondary add-tech-btn"><i data-feather="plus" class="pointer-events-none"></i></button></div><div class="flex flex-wrap gap-2 mt-2 exp-tech-list">${(data.technologies || []).map(tech => `<span class="tech-tag bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-300 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full flex items-center">${tech}<button type="button" class="remove-tech-btn ml-2 text-subtle hover:text-gray-900 dark:hover:text-gray-100"><i data-feather="x" class="w-3 h-3 pointer-events-none"></i></button></span>`).join('')}</div></div>`;
             experienceList.appendChild(div);
             div.querySelectorAll('.progress-input').forEach(input => input.addEventListener('input', updateEditorProgress));
             feather.replace(); updateEditorProgress();
         }
         addExperienceBtn.addEventListener('click', () => addExperience());
-		
-	    // --- COMMA-SEPARATED TECH TAGS ---
+        
+        // --- FIX: COMMA-SEPARATED TECH TAGS ---
         function addTechTags(inputElement) {
             const list = inputElement.closest('.p-4').querySelector('.exp-tech-list');
             const techNames = inputElement.value.trim().split(',')
@@ -955,9 +955,21 @@ let skills = [], experienceCount = 0, certificationCount = 0;
                 inputElement.value = '';
             }
         }
-		
-        experienceList.addEventListener('click', e => { if (e.target.closest('.remove-tech-btn')) { e.target.closest('.tech-tag').remove(); } if (e.target.closest('.add-tech-btn')) { const div = e.target.closest('.p-4'), input = div.querySelector('.exp-tech-input'), list = div.querySelector('.exp-tech-list'), name = input.value.trim(); if (name) { const span = document.createElement('span'); span.className = 'tech-tag bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-300 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full flex items-center'; span.innerHTML = `${name}<button type="button" class="remove-tech-btn ml-2 text-subtle hover:text-gray-900 dark:hover:text-gray-100"><i data-feather="x" class="w-3 h-3 pointer-events-none"></i></button></span>`; list.appendChild(span); feather.replace(); input.value = ''; } } });
-        experienceList.addEventListener('keypress', e => { if (e.key === 'Enter' && e.target.classList.contains('exp-tech-input')) { e.preventDefault(); e.target.closest('.p-4').querySelector('.add-tech-btn').click(); } });
+        experienceList.addEventListener('click', e => { 
+            if (e.target.closest('.remove-tech-btn')) { 
+                e.target.closest('.tech-tag').remove(); 
+            } 
+            if (e.target.closest('.add-tech-btn')) {
+                const input = e.target.closest('.p-4').querySelector('.exp-tech-input');
+                addTechTags(input);
+            }
+        });
+        experienceList.addEventListener('keypress', e => { 
+            if (e.key === 'Enter' && e.target.classList.contains('exp-tech-input')) { 
+                e.preventDefault(); 
+                addTechTags(e.target);
+            } 
+        });
         
         const certificationList = document.getElementById('certification-list'), addCertificationBtn = document.getElementById('add-certification');
         function addCertification(data = {}) {
