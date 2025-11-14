@@ -1506,6 +1506,8 @@ const sp = `You are ProGenius AI, a helpful recruitment assistant. You have thre
 * Use <ul> and <li> for bulleted lists as specified in the functions above.
 * **IMPORTANT:** Your response must be ONLY the raw HTML content. Do not wrap it in Markdown blocks like \`\`\`html or \`\`\`.`;
             
+            const uq = `${msg}\n\n---CONTEXT---\n\nCurrent Profile (the one being edited):\n${JSON.stringify(p, null, 2)}\n\nCandidate Database (all saved profiles):\n${JSON.stringify(savedProfiles, null, 2)}`; 
+            
             try {
                 const res = await fetch('/.netlify/functions/get-ai-response', {
                     method: 'POST',
